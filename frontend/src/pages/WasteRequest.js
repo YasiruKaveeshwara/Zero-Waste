@@ -8,15 +8,15 @@ import "./wasteRequest.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Bin from "../images/types.png";
-import Carbon from "../images/footprint.jpg";
-import Recycling from "../images/recycle-right.png";
-import Landfill from "../images/landfill.jpg";
+import withAuth from '../hoc/withAuth';
 
-export default function WasteRequest({ onRequestCreated }) {
-  const [wasteType, setWasteType] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [collectionDate, setCollectionDate] = useState(null);
-  const [collectionTime, setCollectionTime] = useState("");
+function WasteRequest({ onRequestCreated }) {
+  const [form, setForm] = useState({
+    wasteType: "",
+    quantity: "",
+    collectionDate: null,
+    collectionTime: "",
+  });
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -28,12 +28,7 @@ export default function WasteRequest({ onRequestCreated }) {
     try {
       const response = await axios.post(
         "http://localhost:3050/api/auth/waste/request",
-        {
-          wasteType,
-          quantity,
-          collectionDate,
-          collectionTime,
-        },
+        form,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -41,23 +36,31 @@ export default function WasteRequest({ onRequestCreated }) {
         }
       );
 
-      console.log(response.data);
       setSuccessMessage("Waste request created successfully!");
 
       // Reset the form fields
-      setWasteType("");
-      setQuantity("");
-      setCollectionDate(null);
-      setCollectionTime("");
+      setForm({
+        wasteType: "",
+        quantity: "",
+        collectionDate: null,
+        collectionTime: "",
+      });
 
       // Call the function to update the waste history data
       if (onRequestCreated) {
         onRequestCreated();
       }
     } catch (err) {
+      console.error('Error creating waste request:', err);
       setError("Error creating waste request. Please try again.");
-      console.error(err);
     }
+  };
+
+  const handleFieldChange = (field, value) => {
+    setForm((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
 
   return (
@@ -80,8 +83,8 @@ export default function WasteRequest({ onRequestCreated }) {
                 <input
                   type="text"
                   id="wasteType"
-                  value={wasteType}
-                  onChange={(e) => setWasteType(e.target.value)}
+                  value={form.wasteType}
+                  onChange={(e) => handleFieldChange("wasteType", e.target.value)}
                   placeholder="Enter waste type (e.g., Plastic, Organic)"
                   required
                 />
@@ -91,8 +94,8 @@ export default function WasteRequest({ onRequestCreated }) {
                 <input
                   type="text"
                   id="quantity"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
+                  value={form.quantity}
+                  onChange={(e) => handleFieldChange("quantity", e.target.value)}
                   placeholder="Enter quantity (e.g., 50 kg)"
                   required
                 />
@@ -100,8 +103,8 @@ export default function WasteRequest({ onRequestCreated }) {
               <div className="form-group">
                 <label htmlFor="collectionDate">Preferred Collection Date</label>
                 <DatePicker
-                  selected={collectionDate}
-                  onChange={(date) => setCollectionDate(date)}
+                  selected={form.collectionDate}
+                  onChange={(date) => handleFieldChange("collectionDate", date)}
                   dateFormat="MMMM d, yyyy"
                   className="date-picker-input"
                   placeholderText="Select a date"
@@ -113,8 +116,8 @@ export default function WasteRequest({ onRequestCreated }) {
                 <input
                   type="time"
                   id="collectionTime"
-                  value={collectionTime}
-                  onChange={(e) => setCollectionTime(e.target.value)}
+                  value={form.collectionTime}
+                  onChange={(e) => handleFieldChange("collectionTime", e.target.value)}
                   required
                 />
               </div>
@@ -134,3 +137,5 @@ export default function WasteRequest({ onRequestCreated }) {
     </div>
   );
 }
+
+export default withAuth(WasteRequest);

@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ResidentSignupForm.module.css';
-
-// Icons (You can use a library like FontAwesome or import your own icons)
 import { FaUser, FaEnvelope, FaLock, FaMapMarkerAlt, FaCity, FaPhone } from 'react-icons/fa';
+
+// Constants
+const API_URL = 'http://localhost:3050/api/auth/signup';
+const ERROR_MESSAGES = {
+  passwordMismatch: 'Passwords do not match.',
+  fillFields: 'Please fill in all required fields.',
+  signupFailed: 'Signup failed. Please try again.',
+  signupError: 'An error occurred during signup.',
+};
 
 const ResidentSignupForm = () => {
   const [form, setForm] = useState({
@@ -18,6 +25,7 @@ const ResidentSignupForm = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Update form fields dynamically
   const onUpdateField = (e) => {
     const { name, value } = e.target;
     setForm({
@@ -26,21 +34,23 @@ const ResidentSignupForm = () => {
     });
   };
 
+  // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation checks
     if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.');
+      setError(ERROR_MESSAGES.passwordMismatch);
       return;
     }
     
     if (!form.residentName || !form.address || !form.city || !form.phone || !form.email) {
-      setError('Please fill in all required fields.');
+      setError(ERROR_MESSAGES.fillFields);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:3050/api/auth/signup', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -50,14 +60,14 @@ const ResidentSignupForm = () => {
 
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        setError('');
-        navigate('/'); 
+        setError(''); // Clear any existing error
+        navigate('/'); // Redirect to the home page
       } else {
-        setError(data.message || 'Signup failed. Please try again.');
+        setError(data.message || ERROR_MESSAGES.signupFailed);
       }
     } catch (err) {
-      console.error('Signup error:', err);
-      setError('An error occurred during signup.');
+      console.error('Signup error:', err); // Log error for debugging
+      setError(ERROR_MESSAGES.signupError);
     }
   };
 

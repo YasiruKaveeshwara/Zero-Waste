@@ -1,22 +1,19 @@
-/* General container styles */
 .waste-history-container {
   display: flex;
   background-color: #f4f8f6;
   min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
-/* Main content area */
 .main-content {
-  margin-left: 220px; /* Leave space for the fixed sidebar */
+  margin-left: 220px;
   padding: 40px;
   width: 85%;
   background-color: #f4f8f6;
 }
 
-/* Search bar styles */
 .search-container {
-  margin: 20px 0; 
+  margin: 20px 0;
   margin-top: 60px;
   display: flex;
   justify-content: center;
@@ -35,7 +32,6 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Table styles */
 .table-container {
   margin-top: 20px;
   overflow-x: auto;
@@ -77,26 +73,24 @@
   font-style: italic;
 }
 
-/* Status styles */
 .status.completed {
-  color: #32CD32; /* Green for completed */
+  color: #32cd32;
   font-weight: bold;
 }
 
 .status.pending {
-  color: #dd9a1e; /* Orange for pending */
+  color: #dd9a1e;
   font-weight: bold;
 }
 
-/* Responsive table */
 @media (max-width: 768px) {
-  .waste-history-table th, 
+  .waste-history-table th,
   .waste-history-table td {
-      font-size: 12px;
-      padding: 8px;
+    font-size: 12px;
+    padding: 8px;
   }
 
   .search-bar {
-      width: 100%;
+    width: 100%;
   }
 }

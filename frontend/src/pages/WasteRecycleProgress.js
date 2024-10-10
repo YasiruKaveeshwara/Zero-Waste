@@ -4,6 +4,7 @@ import SidebarIcon from '../components/sidebar/SidebarIcon';
 import Header from '../components/header/Header';
 import Footer from '../components/Footer';
 import './WasteRecycleProgress.css';
+import withAuth from '../hoc/withAuth.js';
 
 // Import waste type icons
 import MetalIcon from '../images/metal.png';
@@ -24,6 +25,8 @@ const WasteRecycleProgress = () => {
   useEffect(() => {
     // Fetch waste data from the backend
     const fetchWasteData = async () => {
+      setLoading(true);
+      setError(null); // Reset error state before each fetch
       try {
         const response = await axios.get('http://localhost:3050/api/auth/waste/progress', {
           headers: {
@@ -31,14 +34,12 @@ const WasteRecycleProgress = () => {
           },
         });
 
-        const data = response.data;
-        // Process the fetched data
-        const processedData = processWasteData(data);
+        const processedData = processWasteData(response.data);
         setWasteData(processedData);
-        setLoading(false);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching waste data:', err);
         setError('Error fetching waste data');
+      } finally {
         setLoading(false);
       }
     };
@@ -61,13 +62,13 @@ const WasteRecycleProgress = () => {
     ];
 
     // Calculate the total quantity of all waste types combined
-    const totalQuantity = data.reduce((total, waste) => total + parseInt(waste.quantity), 0);
+    const totalQuantity = data.reduce((total, waste) => total + parseInt(waste.quantity, 10), 0);
 
     // Map through each waste type and calculate its total quantity and percentage
     return wasteTypes.map((wasteType) => {
       const totalForType = data
         .filter((waste) => waste.wasteType === wasteType.type)
-        .reduce((total, waste) => total + parseInt(waste.quantity), 0);
+        .reduce((total, waste) => total + parseInt(waste.quantity, 10), 0);
 
       const percentage = totalQuantity > 0 ? Math.round((totalForType / totalQuantity) * 100) : 0;
 
@@ -81,8 +82,6 @@ const WasteRecycleProgress = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
-
-  const totalQuantity = wasteData.reduce((total, waste) => total + parseInt(waste.quantity), 0);
 
   return (
     <div className="waste-progress-container">
@@ -111,7 +110,7 @@ const WasteRecycleProgress = () => {
             ))}
           </div>
           <div className="total-quantity">
-            <h3>Total Quantity Collected: {totalQuantity} kg</h3>
+            <h3>Total Quantity Collected: {wasteData.reduce((total, waste) => total + parseInt(waste.quantity, 10), 0)} kg</h3>
           </div>
         </div>
         <Footer />
@@ -120,4 +119,4 @@ const WasteRecycleProgress = () => {
   );
 };
 
-export default WasteRecycleProgress;
+export default withAuth(WasteRecycleProgress);

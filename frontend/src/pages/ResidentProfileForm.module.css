@@ -2,7 +2,7 @@
 .container {
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align the form to start at the top */
+    align-items: flex-start; 
     min-height: 100vh;
     background-color: #f0f5f1;
     padding: 40px 20px;

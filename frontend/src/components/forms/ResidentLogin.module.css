@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #e7ece8; /* Light eco-friendly green background */
+    background-color: #e7ece8; 
     padding: 20px;
   }
   
@@ -23,7 +23,7 @@
   .heading {
     font-size: 24px;
     font-weight: bold;
-    color: #185233; /* Dark green color for eco-friendly theme */
+    color: #185233; 
     margin-bottom: 20px;
     text-align: center;
   }
@@ -50,7 +50,7 @@
   }
   
   .formField:focus {
-    border-color: #77c23e; /* Bright green focus effect */
+    border-color: #77c23e;
   }
   
   .formActions {
@@ -59,7 +59,7 @@
   }
   
   .formSubmitBtn {
-    background-color: #185233; /* Dark green background for submit button */
+    background-color: #185233; 
     color: white;
     padding: 12px 20px;
     border: none;
@@ -71,24 +71,23 @@
   }
   
   .formSubmitBtn:hover {
-    background-color: #77c23e; /* Brighter green on hover */
+    background-color: #77c23e; 
   }
   
   .error {
-    color: #ff4c4c; /* Red for error messages */
+    color: #ff4c4c; 
     font-size: 14px;
     margin-top: 10px;
     text-align: center;
   }
   
-  /* Register link styles */
   .registerLink {
     text-align: right;
     margin-top: 10px;
   }
   
   .registerLinkText {
-    color: #185233; /* Dark green link color */
+    color: #185233; 
     text-decoration: none;
   }
   

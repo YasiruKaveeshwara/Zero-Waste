@@ -1,4 +1,3 @@
-/* General styles */
 * {
   box-sizing: border-box;
 }
@@ -6,7 +5,7 @@
 body {
   font-family: Georgia, "Times New Roman", Times, serif;
   margin: 0;
-  background-color: #e7ece8; /* Corrected background color */
+  background-color: #e7ece8; 
   padding: 0;
 }
 
@@ -17,15 +16,14 @@ body {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
 
-/* Sidebar styles */
 .sidebar {
   background: #185233;
-  position: fixed; /* Keeps sidebar fixed in place */
+  position: fixed; 
   width: 200px;
-  height: 100vh; /* Full height of the viewport */
+  height: 100vh; 
   top: 0;
   left: 0;
-  overflow: hidden; /* Prevents scrolling within the sidebar */
+  overflow: hidden;
   padding: 0;
 }
 
@@ -65,7 +63,6 @@ body {
   filter: brightness(0) invert(1);
 }
 
-/* Sidebar styles */
 .sidebar a {
   display: flex;
   align-items: center;
@@ -79,29 +76,25 @@ body {
   margin-bottom: 5px;
 }
 
-/* Active link styles */
 .sidebar a.active {
-  background: #77c23e; /* Active link background */
-  color: white; /* Active link text color */
-  width: 200px; /* Ensure the width is consistent */
+  background: #77c23e; 
+  color: white; 
+  width: 200px; 
 }
 
-/* Hover effect for all links */
 .sidebar a:hover {
-  background: #77c23e; /* Hover link background color */
-  color: white; /* Keep text color consistent */
+  background: #77c23e; 
+  color: white; 
 }
 
-/* Keep active link color on hover */
 .sidebar a.active:hover {
-  background: #77c23e; /* Keep active link color on hover */
-  color: white; /* Keep text color consistent */
+  background: #77c23e;
+  color: white; 
 }
 
-/* Main content styles */
 .main {
-  margin-left: 220px; /* Leave space for the fixed sidebar */
-  padding: 20px; /* Optional: add padding to main content */
+  margin-left: 220px; 
+  padding: 20px; 
 }
 
 .sidebar-spacer {
@@ -116,31 +109,28 @@ body {
   animation: fadeIn 1s ease-in-out;
 }
 
-/* Container for main content */
 .main-content {
-  margin-left: 220px; /* Leave space for the fixed sidebar */
+  margin-left: 220px;
   padding: 20px;
 }
 
-/* Section for the cards */
 .cards-section {
   display: flex;
-  justify-content: space-between; /* Distribute cards evenly */
-  gap: 20px; /* Add space between cards */
+  justify-content: space-between; 
+  gap: 20px; 
   margin-top: 90px;
   margin-left: 250px;
 }
 
-/* Card styles for layout adjustments */
 .card-container {
   display: flex;
   gap: 20px;
-  justify-content: space-around; /* Center the cards */
+  justify-content: space-around; 
   padding: 20px;
 }
 
 .card {
-  width: 220px; /* Set a fixed width for each card */
+  width: 220px; 
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -166,32 +156,29 @@ body {
   margin-top: 50px;
 }
 
-/* Container for the grid of text boxes */
 .image-text-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Two columns */
-  grid-template-rows: auto; /* Adjust row height automatically */
-  gap: 20px; /* Add space between the boxes */
+  grid-template-columns: repeat(2, 1fr); 
+  grid-template-rows: auto; 
+  gap: 20px; 
   margin-top: 20px;
   max-width: 85%;
 }
 
-/* Styling for the text box */
 .text-box {
   padding: 5px;
-  background-color: #abc9a7; /* Light gray background */
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  background-color: #abc9a7;
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
   color: #333;
-  height: 200px; /* Set fixed height to keep all boxes the same size */
+  height: 200px; 
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Evenly space the content inside */
+  justify-content: space-between; 
   text-align: center;
   width: 600px;
 }
 
-/* Text styles within the text box */
 .text-box h3 {
   font-size: 22px;
   font-weight: bold;
@@ -203,24 +190,22 @@ body {
   line-height: 1.5;
 }
 
-/* Adjusted styling for the text box */
 .text-box {
-  padding: 20px; /* Add padding around the content */
-  background-color: #abc9a7; /* Light gray background */
-  border-radius: 15px; /* Rounded corners */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  padding: 20px; 
+  background-color: #abc9a7; 
+  border-radius: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
   color: #333;
-  text-align: center; /* Center the text */
-  display: flex; /* Use flexbox for alignment */
-  flex-direction: column; /* Arrange items vertically */
-  justify-content: flex-start; /* Align items at the start */
-  height: auto; /* Set height to auto to fit content */
+  text-align: center; 
+  display: flex; 
+  flex-direction: column;
+  justify-content: flex-start; 
+  height: auto; 
 }
 
-/* Styles for the image */
 .types-image {
-  width: 100%; /* Adjust the width as needed */
-  height: auto; /* Maintain aspect ratio */
-  margin-top: 10px; /* Add space above the image */
-  border-radius: 10px; /* Optional: add rounded corners */
+  width: 100%; 
+  height: auto; 
+  margin-top: 10px; 
+  border-radius: 10px; 
 }

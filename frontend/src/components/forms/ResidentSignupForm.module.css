@@ -1,10 +1,9 @@
-/* General styles */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f5f1; /* Light eco-friendly green background */
+  background-color: #f0f5f1; 
   padding: 20px;
 }
 
@@ -47,12 +46,12 @@
   font-size: 14px;
   margin-bottom: 6px;
   color: #333;
-  padding-left: 25px; /* Indent to make space for the icon */
+  padding-left: 25px;
 }
 
 .formField {
   width: 100%;
-  padding: 10px 12px 10px 35px; /* Padding for icon space */
+  padding: 10px 12px 10px 35px; 
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;

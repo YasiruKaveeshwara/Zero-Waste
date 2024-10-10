@@ -99,7 +99,7 @@
 .cta-section {
     margin-top: 50px;
     text-align: center;
-    background-color: #3ba94d; /* Bright green color for the CTA background */
+    background-color: #3ba94d; 
     padding: 30px;
     border-radius: 10px;
     color: white;
@@ -117,19 +117,19 @@
 }
 
 .cta-button {
-    background-color: #ffffff; /* White background for contrast */
+    background-color: #ffffff; 
     border: none;
     padding: 12px 25px;
     font-size: 16px;
-    color: #3ba94d; /* Matching text color with the background */
+    color: #3ba94d;
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .cta-button:hover {
-    background-color: #2b7f3b; /* Darker green for hover effect */
-    color: white; /* Change text color on hover */
+    background-color: #2b7f3b; 
+    color: white; 
 }
 
 
@@ -149,8 +149,8 @@
 .testimonials-container {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Allows for responsive wrapping */
-    gap: 20px; /* Space between testimonial cards */
+    flex-wrap: wrap; 
+    gap: 20px; 
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -169,7 +169,7 @@
 }
 
 .testimonial-card:hover {
-    transform: translateY(-5px); /* Slight elevation effect */
+    transform: translateY(-5px);
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -235,7 +235,7 @@
 }
 
 .service-card:hover {
-    transform: translateY(-5px); /* Slight elevation effect */
+    transform: translateY(-5px);
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
 }
 

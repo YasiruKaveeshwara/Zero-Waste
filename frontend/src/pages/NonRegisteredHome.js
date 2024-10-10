@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./NonRegisteredHomeStyles.css"; // Include the styles
-import WasteImage from "../images/greenn.png"; // Background image
-import Logo from "../images/leaf.png"; // Shop logo
-import SliderImage1 from "../images/slider1.jpeg"; // Slider images
+import "./NonRegisteredHomeStyles.css";
+import WasteImage from "../images/greenn.png";
+import Logo from "../images/leaf.png";
+import SliderImage1 from "../images/slider1.jpeg";
 import SliderImage2 from "../images/slider2.jpeg";
 import SliderImage3 from "../images/slider3.jpeg";
 
@@ -12,7 +12,7 @@ import ConserveIcon from "../images/recycle-right.png";
 import SupportIcon from "../images/landfill.jpg";
 import SaveMoneyIcon from "../images/garbage-collect.jpg";
 
-export default function NonRegisteredHome() {
+const NonRegisteredHome = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const slides = [
@@ -30,6 +30,33 @@ export default function NonRegisteredHome() {
             image: SliderImage3,
             title: "Recycle More, Waste Less",
             description: "Explore ways you can reduce your waste footprint with our tips and resources.",
+        },
+    ];
+
+    const benefits = [
+        {
+            icon: ReduceIcon,
+            alt: "Reduce Pollution Icon",
+            title: "Reduce Pollution",
+            description: "By managing waste responsibly, you can help reduce harmful emissions and pollution.",
+        },
+        {
+            icon: ConserveIcon,
+            alt: "Conserve Resources Icon",
+            title: "Conserve Resources",
+            description: "Recycling and reusing materials conserves natural resources for future generations.",
+        },
+        {
+            icon: SupportIcon,
+            alt: "Support the Environment Icon",
+            title: "Support the Environment",
+            description: "Every action you take contributes to a healthier and greener planet.",
+        },
+        {
+            icon: SaveMoneyIcon,
+            alt: "Save Money Icon",
+            title: "Save Money",
+            description: "By reducing waste, you can also lower disposal costs and save on purchasing new materials.",
         },
     ];
 
@@ -54,7 +81,7 @@ export default function NonRegisteredHome() {
             </header>
 
             <section className="slider-section">
-                <button className="slider-button prev" onClick={prevSlide}>{"<"}</button>
+                <button className="slider-button prev" onClick={prevSlide} aria-label="Previous Slide">{"<"}</button>
                 <div className="slider">
                     <img src={slides[currentSlide].image} alt={slides[currentSlide].title} className="slider-image" />
                     <div className="slider-content">
@@ -62,40 +89,21 @@ export default function NonRegisteredHome() {
                         <p>{slides[currentSlide].description}</p>
                     </div>
                 </div>
-                <button className="slider-button next" onClick={nextSlide}>{">"}</button>
+                <button className="slider-button next" onClick={nextSlide} aria-label="Next Slide">{">"}</button>
             </section>
 
             <section className="benefits-section">
                 <h2>Why Choose Zero Waste?</h2>
                 <div className="benefits-grid">
-                    <div className="benefit-card">
-                        <div className="icon-container">
-                            <img src={ReduceIcon} alt="Reduce Pollution Icon" className="benefit-icon" />
+                    {benefits.map((benefit, index) => (
+                        <div key={index} className="benefit-card">
+                            <div className="icon-container">
+                                <img src={benefit.icon} alt={benefit.alt} className="benefit-icon" />
+                            </div>
+                            <h3>{benefit.title}</h3>
+                            <p>{benefit.description}</p>
                         </div>
-                        <h3>Reduce Pollution</h3>
-                        <p>By managing waste responsibly, you can help reduce harmful emissions and pollution.</p>
-                    </div>
-                    <div className="benefit-card">
-                        <div className="icon-container">
-                            <img src={ConserveIcon} alt="Conserve Resources Icon" className="benefit-icon" />
-                        </div>
-                        <h3>Conserve Resources</h3>
-                        <p>Recycling and reusing materials conserves natural resources for future generations.</p>
-                    </div>
-                    <div className="benefit-card">
-                        <div className="icon-container">
-                            <img src={SupportIcon} alt="Support the Environment Icon" className="benefit-icon" />
-                        </div>
-                        <h3>Support the Environment</h3>
-                        <p>Every action you take contributes to a healthier and greener planet.</p>
-                    </div>
-                    <div className="benefit-card">
-                        <div className="icon-container">
-                            <img src={SaveMoneyIcon} alt="Save Money Icon" className="benefit-icon" />
-                        </div>
-                        <h3>Save Money</h3>
-                        <p>By reducing waste, you can also lower disposal costs and save on purchasing new materials.</p>
-                    </div>
+                    ))}
                 </div>
             </section>
 
@@ -105,4 +113,6 @@ export default function NonRegisteredHome() {
             </footer>
         </div>
     );
-}
+};
+
+export default NonRegisteredHome;

@@ -3,10 +3,12 @@ import axios from "axios";
 import SidebarIcon from "../components/sidebar/SidebarIcon";
 import Header from "../components/header/Header";
 import Footer from "../components/Footer";
-import "../components/sidebar/styles.css"; // Ensure styles are included
-import "./wasteHistory.css"; // Keep the custom styles for the waste history page
+import "../components/sidebar/styles.css";
+import "./wasteHistory.css";
+import withAuth from "../hoc/withAuth";
 
-export default function WasteHistory() {
+// Define the WasteHistory component
+function WasteHistory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [wasteData, setWasteData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,25 +17,36 @@ export default function WasteHistory() {
   // Function to fetch waste data from the backend
   const fetchWasteData = async () => {
     setLoading(true);
+    setError(null); // Reset error state before fetching
     try {
-      // Replace the URL with your backend API endpoint
-      const response = await axios.get("http://localhost:3050/api/auth/waste/history", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Adjust based on how you store the token
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:3050/api/auth/waste/history",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       setWasteData(response.data);
     } catch (err) {
+      console.error("Error fetching waste data:", err);
       setError("Failed to fetch waste data");
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch data when the component mounts
   useEffect(() => {
-    fetchWasteData(); // Fetch data when the component mounts
+    fetchWasteData();
   }, []);
 
+  // Function to handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Filter waste data based on search query
   const filteredData = wasteData.filter((entry) =>
     entry.wasteType.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -48,8 +61,9 @@ export default function WasteHistory() {
             type="text"
             placeholder="Search by waste type..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             className="search-bar"
+            aria-label="Search by waste type"
           />
         </div>
         <div className="table-container">
@@ -72,16 +86,22 @@ export default function WasteHistory() {
                 {filteredData.length > 0 ? (
                   filteredData.map((entry, index) => (
                     <tr key={index}>
-                      <td>{new Date(entry.collectionDate).toLocaleDateString()}</td>
+                      <td>
+                        {new Date(entry.collectionDate).toLocaleDateString()}
+                      </td>
                       <td>{entry.collectionTime}</td>
                       <td>{entry.wasteType}</td>
                       <td>{entry.quantity}</td>
-                      <td className={`status ${entry.status.toLowerCase()}`}>{entry.status}</td>
+                      <td className={`status ${entry.status.toLowerCase()}`}>
+                        {entry.status}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="no-data">No data available</td>
+                    <td colSpan="5" className="no-data">
+                      No data available
+                    </td>
                   </tr>
                 )}
               </tbody>
@@ -93,3 +113,5 @@ export default function WasteHistory() {
     </div>
   );
 }
+
+export default withAuth(WasteHistory);

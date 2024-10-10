@@ -4,8 +4,9 @@ import SidebarIcon from '../components/sidebar/SidebarIcon';
 import Header from '../components/header/Header';
 import Footer from '../components/Footer';
 import styles from './ResidentProfileForm.module.css';
+import withAuth from '../hoc/withAuth';
 
-// Icons (You can use a library like FontAwesome or import your own icons)
+// Icons
 import { FaUser, FaEnvelope, FaMapMarkerAlt, FaCity, FaPhone, FaLock } from 'react-icons/fa';
 
 const ResidentProfile = () => {
@@ -58,10 +59,10 @@ const ResidentProfile = () => {
 
   const onUpdateField = (e) => {
     const { name, value } = e.target;
-    setForm({
-      ...form,
+    setForm((prevForm) => ({
+      ...prevForm,
       [name]: value,
-    });
+    }));
   };
 
   const onSubmit = async (e) => {
@@ -81,7 +82,10 @@ const ResidentProfile = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          password: form.password ? form.password : undefined,
+        }),
       });
 
       const data = await response.json();
@@ -108,7 +112,7 @@ const ResidentProfile = () => {
             <h2 className={styles.heading}>Edit Resident Profile</h2>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaUser className={styles.icon}/> Full Name</label>
+              <label className={styles.formLabel}><FaUser className={styles.icon} /> Full Name</label>
               <input
                 className={styles.formField}
                 type="text"
@@ -121,7 +125,7 @@ const ResidentProfile = () => {
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaMapMarkerAlt className={styles.icon}/> Address</label>
+              <label className={styles.formLabel}><FaMapMarkerAlt className={styles.icon} /> Address</label>
               <input
                 className={styles.formField}
                 type="text"
@@ -134,7 +138,7 @@ const ResidentProfile = () => {
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaCity className={styles.icon}/> City</label>
+              <label className={styles.formLabel}><FaCity className={styles.icon} /> City</label>
               <input
                 className={styles.formField}
                 type="text"
@@ -147,7 +151,7 @@ const ResidentProfile = () => {
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaPhone className={styles.icon}/> Phone</label>
+              <label className={styles.formLabel}><FaPhone className={styles.icon} /> Phone</label>
               <input
                 className={styles.formField}
                 type="tel"
@@ -162,21 +166,18 @@ const ResidentProfile = () => {
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaEnvelope className={styles.icon}/> Email</label>
+              <label className={styles.formLabel}><FaEnvelope className={styles.icon} /> Email</label>
               <input
                 className={styles.formField}
                 type="email"
                 name="email"
                 value={form.email}
-                onChange={onUpdateField}
-                placeholder="Enter your email"
-                required
                 disabled
               />
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaLock className={styles.icon}/> New Password</label>
+              <label className={styles.formLabel}><FaLock className={styles.icon} /> New Password</label>
               <input
                 className={styles.formField}
                 type="password"
@@ -188,7 +189,7 @@ const ResidentProfile = () => {
             </div>
 
             <div className={styles.formRow}>
-              <label className={styles.formLabel}><FaLock className={styles.icon}/> Confirm Password</label>
+              <label className={styles.formLabel}><FaLock className={styles.icon} /> Confirm Password</label>
               <input
                 className={styles.formField}
                 type="password"
@@ -213,4 +214,4 @@ const ResidentProfile = () => {
   );
 };
 
-export default ResidentProfile;
+export default withAuth(ResidentProfile);

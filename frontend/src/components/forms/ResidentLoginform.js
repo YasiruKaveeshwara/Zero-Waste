@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ResidentLogin.module.css';
 
-const ResidentLoginform = () => {
+// Constants for URLs and error messages
+const API_URL = 'http://localhost:3050/api/auth/login';
+const LOGIN_FAILED_MSG = 'Login failed. Please try again.';
+const FILL_FIELDS_MSG = 'Please fill in both fields.';
+const LOGIN_ERROR_MSG = 'An error occurred during login.';
+
+const ResidentLoginForm = () => {
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -10,6 +16,7 @@ const ResidentLoginform = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Update form fields
   const onUpdateField = (e) => {
     setForm({
       ...form,
@@ -17,44 +24,50 @@ const ResidentLoginform = () => {
     });
   };
 
+  // Handle login submission
   const onLogin = async (e) => {
     e.preventDefault();
+
+    // Check if fields are filled
     if (!form.email || !form.password) {
-      setError('Please fill in both fields.');
+      setError(FILL_FIELDS_MSG);
       return;
     }
+
     try {
-      const response = await fetch('http://localhost:3050/api/auth/login', {
+      const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
+        // Storing relevant data in localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('residentEmail', form.email);
         localStorage.setItem('residentName', data.residentName);
         localStorage.setItem('address', data.address);
         localStorage.setItem('phone', data.phone);
-  
-        // Check if the usertype is 'resident' and navigate accordingly
+
+        // Navigate based on user type
         if (data.usertype === 'resident') {
           navigate('/resident-home');
         } else {
-          // Handle other user types if needed
           navigate('/home');
         }
       } else {
-        setError(data.message || 'Login failed. Please try again.');
+        setError(data.message || LOGIN_FAILED_MSG);
       }
     } catch (err) {
+      // Log error to console for debugging
       console.error('Login error:', err);
-      setError('An error occurred during login.');
+      setError(LOGIN_ERROR_MSG);
     }
   };
 
+  // Navigate to the signup page
   const onSignup = () => {
     navigate('/signup');
   };
@@ -108,4 +121,4 @@ const ResidentLoginform = () => {
   );
 };
 
-export default ResidentLoginform;
+export default ResidentLoginForm;

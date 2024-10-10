@@ -1,7 +1,8 @@
-const Resident = require('../models/Resident');
+const UserFactory = require('../factories/UserFactory');
+const Resident = require('../models/Resident'); // Make sure Resident is imported directly
 const jwt = require('jsonwebtoken');
 
-// Signup resident
+// Signup resident (using the factory pattern)
 exports.signupResident = async (req, res) => {
   try {
     const { residentName, address, city, phone, email, password } = req.body;
@@ -12,7 +13,8 @@ exports.signupResident = async (req, res) => {
       return res.status(400).json({ message: 'Email already in use.' });
     }
 
-    const newResident = new Resident({
+    // Create a new resident using the factory
+    const newResident = UserFactory.createUser('resident', {
       residentName,
       address,
       city,
@@ -25,6 +27,7 @@ exports.signupResident = async (req, res) => {
     await newResident.save();
     res.status(201).json({ message: 'Resident registered successfully.' });
   } catch (error) {
+    console.error('Error registering resident:', error); // Add a console log for debugging
     res.status(500).json({ message: 'Error registering resident.', error });
   }
 };
@@ -62,6 +65,7 @@ exports.loginResident = async (req, res) => {
       usertype: resident.usertype,
     });
   } catch (error) {
+    console.error('Error logging in resident:', error); // Add a console log for debugging
     res.status(500).json({ message: 'Error logging in resident.', error });
   }
 };
