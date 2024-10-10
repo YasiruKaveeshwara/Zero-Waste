@@ -32,9 +32,9 @@ export default function SidebarIcon() {
       </Link>
 
       <Link
-        to="/shops"
-        className={activeLink === "/shops" ? "active" : ""}
-        onClick={() => handleLinkClick("/shops")}
+        to="/resident-profile"
+        className={activeLink === "/resident-profile" ? "active" : ""}
+        onClick={() => handleLinkClick("/resident-profile")}
       >
         <img src={profileIcon} alt="Profile" className="sidebar-icon" />
         Profile

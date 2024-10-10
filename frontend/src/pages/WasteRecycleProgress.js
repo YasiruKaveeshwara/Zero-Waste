@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import SidebarIcon from '../components/sidebar/SidebarIcon';
 import Header from '../components/header/Header';
 import Footer from '../components/Footer';
@@ -16,16 +17,70 @@ import WoodIcon from '../images/wood.jpg';
 import HazardousIcon from '../images/hazardous.jpeg';
 
 const WasteRecycleProgress = () => {
-  const wasteData = [
-    { type: 'Metal', percentage: 80, quantity: '800 kg', color: '#FFD700', icon: MetalIcon },
-    { type: 'Paper', percentage: 20, quantity: '200 kg', color: '#FF1493', icon: PaperIcon },
-    { type: 'Plastic', percentage: 50, quantity: '500 kg', color: '#1E90FF', icon: PlasticIcon },
-    { type: 'Organic', percentage: 60, quantity: '600 kg', color: '#32CD32', icon: OrganicIcon },
-    { type: 'Glass', percentage: 40, quantity: '400 kg', color: '#FF6347', icon: GlassIcon },
-    { type: 'Electronics', percentage: 70, quantity: '300 kg', color: '#4B0082', icon: ElectronicsIcon },
-    { type: 'Wood', percentage: 35, quantity: '350 kg', color: '#8B4513', icon: WoodIcon },
-    { type: 'Hazardous', percentage: 15, quantity: '150 kg', color: '#DC143C', icon: HazardousIcon },
-  ];
+  const [wasteData, setWasteData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch waste data from the backend
+    const fetchWasteData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3050/api/auth/waste/progress', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        const data = response.data;
+        // Process the fetched data
+        const processedData = processWasteData(data);
+        setWasteData(processedData);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError('Error fetching waste data');
+        setLoading(false);
+      }
+    };
+
+    fetchWasteData();
+  }, []);
+
+  // Function to process the fetched waste data and calculate quantities and percentages
+  const processWasteData = (data) => {
+    // Define initial waste types and their icons
+    const wasteTypes = [
+      { type: 'Metal', icon: MetalIcon, color: '#FFD700' },
+      { type: 'Paper', icon: PaperIcon, color: '#FF1493' },
+      { type: 'Plastic', icon: PlasticIcon, color: '#1E90FF' },
+      { type: 'Organic', icon: OrganicIcon, color: '#32CD32' },
+      { type: 'Glass', icon: GlassIcon, color: '#FF6347' },
+      { type: 'Electronics', icon: ElectronicsIcon, color: '#4B0082' },
+      { type: 'Wood', icon: WoodIcon, color: '#8B4513' },
+      { type: 'Hazardous', icon: HazardousIcon, color: '#DC143C' },
+    ];
+
+    // Calculate the total quantity of all waste types combined
+    const totalQuantity = data.reduce((total, waste) => total + parseInt(waste.quantity), 0);
+
+    // Map through each waste type and calculate its total quantity and percentage
+    return wasteTypes.map((wasteType) => {
+      const totalForType = data
+        .filter((waste) => waste.wasteType === wasteType.type)
+        .reduce((total, waste) => total + parseInt(waste.quantity), 0);
+
+      const percentage = totalQuantity > 0 ? Math.round((totalForType / totalQuantity) * 100) : 0;
+
+      return {
+        ...wasteType,
+        percentage,
+        quantity: `${totalForType} kg`,
+      };
+    });
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="error">{error}</p>;
 
   const totalQuantity = wasteData.reduce((total, waste) => total + parseInt(waste.quantity), 0);
 

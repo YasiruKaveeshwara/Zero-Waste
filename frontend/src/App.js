@@ -1,39 +1,3 @@
-// // App.js
-// import React from "react";
-// import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import Home from "./pages/Home.js";
-// import History from "./pages/WasteHistory.js";
-// import Request from "./pages/WasteRequest.js";
-// import { AuthContextProvider } from './context/AuthContext.js';
-// import { ProductProvider } from './pages/ProductContext.js'; // Import the ProductProvider
-
-
-
-// export default function App() {
-//   return (
-//     <BrowserRouter>
-//       <AuthContextProvider>
-//       <ProductProvider> {/* Wrap with ProductProvider */}
-//           <Routes>
-         
-//             <Route path='/' element={<Home />} /> 
-//             <Route path='/history' element={<History />} /> 
-//             <Route path='/request' element={<Request />} /> 
-
-//           </Routes>
-//         </ProductProvider> {/* Close ProductProvider */}
-//       </AuthContextProvider>
-//     </BrowserRouter>
-//   );
-// }
-
-
-
-
-
-
-
-// App.js
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginForm from './components/forms/ResidentLoginform.js';
@@ -45,6 +9,8 @@ import Request from "./pages/WasteRequest.js";
 import { AuthContextProvider } from './context/AuthContext.js';
 import { ResidentProvider } from './pages/ResidentContext.js'; // Import the ProductProvider
 import NonRegHome from "./pages/NonRegisteredHome.js";
+import ResidentProfile from "./pages/ResidentProfile.js"; // Import the ResidentProfile component
+
 
 export default function App() {
   return (
@@ -59,6 +25,8 @@ export default function App() {
             <Route path='/resident-nonreghome' element={<NonRegHome />} /> 
             <Route path='/waste-progress' element={<Progress />} />
             <Route path='/resident-signup' element={<SignupForm />} /> 
+            <Route path='/resident-profile' element={<ResidentProfile />} /> {/* New Resident Profile Route */}
+
            
           </Routes>
         </ResidentProvider> {/* Close ProductProvider */}
