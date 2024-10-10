@@ -67,10 +67,10 @@ const ResidentLoginForm = () => {
     }
   };
 
-  // Navigate to the signup page
-  const onSignup = () => {
-    navigate('/signup');
-  };
+  // // Navigate to the signup page
+  // const onSignup = () => {
+  //   navigate('/signup');
+  // };
 
   return (
     <div className={styles.container}>

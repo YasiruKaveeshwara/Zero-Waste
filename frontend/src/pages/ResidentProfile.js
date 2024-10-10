@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import SidebarIcon from '../components/sidebar/SidebarIcon';
 import Header from '../components/header/Header';
 import Footer from '../components/Footer';
@@ -21,7 +20,6 @@ const ResidentProfile = () => {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchResidentData = async () => {

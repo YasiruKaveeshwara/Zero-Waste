@@ -13,7 +13,6 @@ import PlasticIcon from '../images/plastic.jpeg';
 import OrganicIcon from '../images/organic.jpg';
 import GlassIcon from '../images/glass.jpeg';
 import ElectronicsIcon from '../images/electronics.png';
-import TextileIcon from '../images/textile.jpg';
 import WoodIcon from '../images/wood.jpg';
 import HazardousIcon from '../images/hazardous.jpeg';
 

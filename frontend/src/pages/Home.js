@@ -11,7 +11,7 @@ import withAuth from "../hoc/withAuth";
 import RecyclingIcon from "../images/recycle-right.png";
 import EcoFriendlyIcon from "../images/footprint.jpg";
 import CollectionIcon from "../images/landfill.jpg";
-import ServicesImage from "../images/greenn.png";
+import ServicesImage from "../images/slider2.jpeg";
 import User1 from "../images/user1.jpg";
 import User2 from "../images/user2.jpg";
 
@@ -50,6 +50,30 @@ const TESTIMONIALS = [
     name: "John D., Eco Enthusiast",
     quote: "Their commitment to sustainability and the environment is truly impressive.",
   },
+  {
+    img: User1,
+    alt: "User",
+    name: "Sarah J., Business Owner",
+    quote: "Eco Waste Management has completely transformed our approach to waste disposal. Highly recommend!",
+  },
+  {
+    img: User2,
+    alt: "User",
+    name: "John D., Eco Enthusiast",
+    quote: "Their commitment to sustainability and the environment is truly impressive.",
+  },
+  {
+    img: User1,
+    alt: "User",
+    name: "Sarah J., Business Owner",
+    quote: "Eco Waste Management has completely transformed our approach to waste disposal. Highly recommend!",
+  },
+  {
+    img: User2,
+    alt: "User",
+    name: "John D., Eco Enthusiast",
+    quote: "Their commitment to sustainability and the environment is truly impressive.",
+  }
 ];
 
 // Define the Home component

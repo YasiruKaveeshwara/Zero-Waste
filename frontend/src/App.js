@@ -18,9 +18,10 @@ function App() {
         <ResidentProvider>
           <Routes>
             {/* Public Routes */}
-            <Route path='/' element={<LoginForm />} />
+            <Route path='/' element={<NonRegHome />} />
             <Route path='/resident-signup' element={<SignupForm />} />
             <Route path='/resident-nonreghome' element={<NonRegHome />} />
+            <Route path='/resident-login' element={<LoginForm />} />
 
             {/* Protected Routes */}
             <Route path='/resident-home' element={<Home />} />

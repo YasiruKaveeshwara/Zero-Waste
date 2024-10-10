@@ -1,7 +1,6 @@
 import React from "react";
 import "./headerStyles.css";
 import notificationIcon from "../../images/notification.png";
-import logo from "../../images/leaf.png";
 
 // Constants for routes
 const ROUTES = {

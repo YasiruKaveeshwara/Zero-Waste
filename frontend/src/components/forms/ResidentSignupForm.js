@@ -178,7 +178,7 @@ const ResidentSignupForm = () => {
         <div className={styles.registerLink}>
           <p>
             Already registered?{" "}
-            <a href="/" className={styles.registerLinkText}>
+            <a href="/resident-login" className={styles.registerLinkText}>
               Login here
             </a>
           </p>

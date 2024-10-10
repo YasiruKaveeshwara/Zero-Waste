@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import "./NonRegisteredHomeStyles.css";
-import WasteImage from "../images/greenn.png";
 import Logo from "../images/leaf.png";
 import SliderImage1 from "../images/slider1.jpeg";
 import SliderImage2 from "../images/slider2.jpeg";
-import SliderImage3 from "../images/slider3.jpeg";
+import SliderImage5 from "../images/colouredbins.jpg";
 
 // Import icons
 import ReduceIcon from "../images/footprint.jpg";
@@ -12,10 +11,16 @@ import ConserveIcon from "../images/recycle-right.png";
 import SupportIcon from "../images/landfill.jpg";
 import SaveMoneyIcon from "../images/garbage-collect.jpg";
 
+
 const NonRegisteredHome = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
-
+   
     const slides = [
+        {
+            image: SliderImage5,
+    title: "Eco-Friendly Waste Management",
+    description: "Discover our services and how we manage waste to keep our planet clean and green.",
+        },
         {
             image: SliderImage1,
             title: "Join the Zero Waste Movement",
@@ -23,14 +28,10 @@ const NonRegisteredHome = () => {
         },
         {
             image: SliderImage2,
-            title: "Eco-Friendly Waste Management",
-            description: "Discover our services and how we manage waste to keep our planet clean and green.",
-        },
-        {
-            image: SliderImage3,
             title: "Recycle More, Waste Less",
             description: "Explore ways you can reduce your waste footprint with our tips and resources.",
         },
+       
     ];
 
     const benefits = [
