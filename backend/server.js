@@ -5,6 +5,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/authRoutes');
 
+
 dotenv.config();
 
 const app = express();
@@ -32,6 +33,7 @@ connection.once("open", () => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
