@@ -1,16 +1,22 @@
 //centerController.js
 const CollectionCenter = require("../models/Center");
-
-// Add a new collection center
+const CollectionCenterFactory = require("../factories/CollectionCenterFactory");
 exports.addCenter = async (req, res) => {
   try {
+    console.log("Received data:", req.body); // Log the request data for debugging
+
     const newCenter = new CollectionCenter(req.body);
     await newCenter.save();
     res.status(201).json(newCenter);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to add collection center.", error });
+    // Log the entire error stack for more detailed debugging
+    console.error("Error details:", error.message, error.stack);
+
+    // Send a detailed error response to identify what went wrong
+    res.status(500).json({
+      message: "Failed to add collection center.",
+      error: error.message || error
+    });
   }
 };
 
