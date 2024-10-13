@@ -71,3 +71,49 @@ exports.getWasteProgress = async (req, res) => {
     res.status(500).json({ message: 'Error fetching waste progress data.', error });
   }
 };
+
+// Update a waste request
+exports.updateWasteRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { wasteType, quantity, collectionDate, collectionTime, status } = req.body;
+
+    // Validate request data
+    if (!wasteType || !quantity || !collectionDate || !collectionTime) {
+      return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    const updatedRequest = await WasteRequest.findByIdAndUpdate(
+      id,
+      { wasteType, quantity, collectionDate, collectionTime, status },
+      { new: true }
+    );
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: 'Waste request not found.' });
+    }
+
+    res.status(200).json(updatedRequest);
+  } catch (error) {
+    console.error('Error updating waste request:', error);
+    res.status(500).json({ message: 'Error updating waste request.', error });
+  }
+};
+
+// Delete a waste request
+exports.deleteWasteRequest = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedRequest = await WasteRequest.findByIdAndDelete(id);
+
+    if (!deletedRequest) {
+      return res.status(404).json({ message: 'Waste request not found.' });
+    }
+
+    res.status(200).json({ message: 'Waste request deleted successfully.' });
+  } catch (error) {
+    console.error('Error deleting waste request:', error);
+    res.status(500).json({ message: 'Error deleting waste request.', error });
+  }
+};

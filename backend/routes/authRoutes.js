@@ -12,7 +12,8 @@ router.post('/login', authController.loginResident);
 // Waste request routes (protected)
 router.post('/waste/request', protect, wasteController.createWasteRequest);
 router.get('/waste/history', protect, wasteController.getUserWasteRequests);
-
+router.put('/waste/request/:id', protect, wasteController.updateWasteRequest); // Edit request
+router.delete('/waste/request/:id', protect, wasteController.deleteWasteRequest); // Delete request
 // Protected route for fetching waste progress data
 router.get('/waste/progress', protect, wasteController.getWasteProgress);
 
