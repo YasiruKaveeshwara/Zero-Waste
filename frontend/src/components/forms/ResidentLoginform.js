@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './ResidentLogin.module.css';
 
-// Constants for URLs and error messages
 const API_URL = 'http://localhost:3050/api/auth/login';
 const LOGIN_FAILED_MSG = 'Login failed. Please try again.';
 const FILL_FIELDS_MSG = 'Please fill in both fields.';
@@ -44,14 +43,12 @@ const ResidentLoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Storing relevant data in localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('residentEmail', form.email);
         localStorage.setItem('residentName', data.residentName);
         localStorage.setItem('address', data.address);
         localStorage.setItem('phone', data.phone);
 
-        // Navigate based on user type
         if (data.usertype === 'resident') {
           navigate('/resident-home');
         } else {
@@ -61,16 +58,10 @@ const ResidentLoginForm = () => {
         setError(data.message || LOGIN_FAILED_MSG);
       }
     } catch (err) {
-      // Log error to console for debugging
       console.error('Login error:', err);
       setError(LOGIN_ERROR_MSG);
     }
   };
-
-  // // Navigate to the signup page
-  // const onSignup = () => {
-  //   navigate('/signup');
-  // };
 
   return (
     <div className={styles.container}>
@@ -108,7 +99,11 @@ const ResidentLoginForm = () => {
             <button type="submit" className={styles.formSubmitBtn}>Login</button>
           </div>
         </form>
-        <div className={styles.registerLink}>
+
+        <div className={styles.extraLinks}>
+          <p>
+            <a href="/resident-forgot-password" className={styles.forgotPasswordLink}>Forgot Password?</a>
+          </p>
           <p>
             New resident?{" "}
             <a href="/resident-signup" className={styles.registerLinkText}>

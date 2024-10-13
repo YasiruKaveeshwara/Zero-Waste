@@ -85,6 +85,7 @@ function WasteRequest({ onRequestCreated }) {
     <div className="waste-request-container">
       <SidebarIcon />
       <div className="main-content-request">
+      <div className="large-container">
         <Header />
         <div className="banner-section">
           <h1>Eco-Friendly Waste Management</h1>
@@ -175,6 +176,7 @@ function WasteRequest({ onRequestCreated }) {
           <div className="image-container">
             <img src={Bin} alt="Waste Management" className="waste-image" />
           </div>
+        </div>
         </div>
         <Footer />
       </div>

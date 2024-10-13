@@ -87,7 +87,7 @@
   }
   
   .registerLinkText {
-    color: #185233; 
+    color: #4464be; 
     text-decoration: none;
   }
   
@@ -95,3 +95,11 @@
     text-decoration: underline;
   }
   
+  .forgotPasswordLink {
+    color: #4464be; 
+    text-decoration: none;
+  }
+  
+  .forgotPasswordLink:hover {
+    text-decoration: underline;
+  }

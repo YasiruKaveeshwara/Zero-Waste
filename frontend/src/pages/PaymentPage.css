@@ -1,11 +1,5 @@
-.payment-page-container {
-    display: flex;
-    margin-top: 80px;
-  }
-  
-  .main-content {
-    margin-left: 220px;
-    padding: 20px;
+  .main-content-payment {
+    margin-left: 200px;
   }
   
   .payment-content {

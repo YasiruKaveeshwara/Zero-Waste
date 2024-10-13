@@ -64,7 +64,7 @@ function Home() {
   return (
     <div className="home-container">
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-home">
         <Header />
         <div className="cards-section">
           <CardView />

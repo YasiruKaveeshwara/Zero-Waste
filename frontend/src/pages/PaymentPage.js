@@ -64,7 +64,7 @@ function PaymentPage() {
   return (
     <div className="payment-page-container">
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-payment">
         <Header />
         <div className="payment-content">
           <h2>Waste Collection Payment</h2>

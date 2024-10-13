@@ -96,7 +96,7 @@ function WasteHistory() {
   return (
     <div className="waste-history-container">
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-history">
         <Header />
         <div className="search-container">
           <input

@@ -1,21 +1,17 @@
 /* Container for the profile form */
 .container {
     display: flex;
-    justify-content: center;
-    align-items: flex-start; 
-    min-height: 100vh;
-    background-color: #f0f5f1;
-    padding: 40px 20px;
+    justify-content: start;
+    margin-left: 200px;
+    background-color: #ffffff;
   }
   
   /* Form structure */
   .form {
     background: #ffffff;
     padding: 30px;
-    border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 1200px;
+    width: 1320px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -55,7 +51,7 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
-  .main-content{
+  .main-content-profile{
     background-color: #ffffff !important;
   }
   .formField:focus {

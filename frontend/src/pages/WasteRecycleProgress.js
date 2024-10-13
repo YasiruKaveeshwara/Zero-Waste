@@ -85,7 +85,7 @@ const WasteRecycleProgress = () => {
   return (
     <div className="waste-progress-container">
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-progress">
         <Header />
         <div className="progress-section">
           <h2>Waste Recycling Progress</h2>

@@ -103,7 +103,7 @@ const ResidentProfile = () => {
   return (
     <div className={styles.container}>
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-profile">
         <Header />
         <div className={styles.formContainer}>
           <form className={styles.form} onSubmit={onSubmit}>

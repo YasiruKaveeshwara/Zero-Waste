@@ -18,8 +18,8 @@ const NonRegisteredHome = () => {
     const slides = [
         {
             image: SliderImage5,
-    title: "Eco-Friendly Waste Management",
-    description: "Discover our services and how we manage waste to keep our planet clean and green.",
+            title: "Eco-Friendly Waste Management",
+            description: "Discover our services and how we manage waste to keep our planet clean and green.",
         },
         {
             image: SliderImage1,
@@ -31,7 +31,6 @@ const NonRegisteredHome = () => {
             title: "Recycle More, Waste Less",
             description: "Explore ways you can reduce your waste footprint with our tips and resources.",
         },
-       
     ];
 
     const benefits = [
@@ -106,6 +105,68 @@ const NonRegisteredHome = () => {
                         </div>
                     ))}
                 </div>
+            </section>
+
+            {/* Waste Collection Price Plan */}
+            <section className="price-plan-section">
+                <h2>Waste Collection Price Plan</h2>
+                <table className="price-plan-table">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Household Waste Collection</td>
+                            <td>$15/month</td>
+                        </tr>
+                        <tr>
+                            <td>Recyclable Materials Collection</td>
+                            <td>$10/month</td>
+                        </tr>
+                        <tr>
+                            <td>Hazardous Waste Collection</td>
+                            <td>$20/month</td>
+                        </tr>
+                        <tr>
+                            <td>On-Demand Bulk Waste Pickup</td>
+                            <td>$30/request</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            {/* Sample Waste Collection Schedule */}
+            <section className="schedule-section">
+                <h2>Waste Collection Schedule</h2>
+                <table className="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Waste Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Monday</td>
+                            <td>Organic Waste</td>
+                        </tr>
+                        <tr>
+                            <td>Wednesday</td>
+                            <td>Recyclables (Plastic, Paper, Glass)</td>
+                        </tr>
+                        <tr>
+                            <td>Friday</td>
+                            <td>General Household Waste</td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td>Hazardous Waste (By Request Only)</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
 
             <footer className="nonreg-footer">

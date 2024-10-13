@@ -12,6 +12,7 @@ import ResidentProfile from './pages/ResidentProfile';
 import { AuthContextProvider } from './context/AuthContext';
 import { ResidentProvider } from './pages/ResidentContext';
 import NonRegHome from './pages/NonRegisteredHome';
+import ResidentForgotPasswordForm from './components/forms/ResidentForgotPasswordForm';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             {/* Public Routes */}
             <Route path='/' element={<NonRegHome />} />
             <Route path='/resident-signup' element={<SignupForm />} />
+            <Route path="/resident-forgot-password" element={<ResidentForgotPasswordForm />} />
             <Route path='/resident-nonreghome' element={<NonRegHome />} />
             <Route path='/resident-login' element={<LoginForm />} />
             <Route path='/payment' element={<Payment />} />

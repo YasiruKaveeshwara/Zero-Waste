@@ -214,3 +214,122 @@ body {
   margin-top: 40px;
   border-top: 1px solid #77c23e;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .nonreg-navbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .slider-content {
+    bottom: 10%;
+    left: 5%;
+    padding: 15px;
+    max-width: 90%;
+    font-size: 14px;
+  }
+
+  .slider-button {
+    font-size: 30px;
+  }
+
+  .benefits-section h2 {
+    font-size: 24px;
+  }
+
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-card {
+    padding: 15px;
+  }
+
+  .benefit-card h3 {
+    font-size: 18px;
+  }
+
+  .benefit-card p {
+    font-size: 14px;
+  }
+
+  .logo {
+    height: 60px;
+  }
+
+  .nonreg-nav-link {
+    font-size: 14px;
+    padding: 8px 15px;
+  }
+}
+
+/* Price Plan Section */
+.price-plan-section {
+  padding: 60px 20px;
+  background-color: #f9fafb;
+  text-align: center;
+}
+
+.price-plan-section h2 {
+  font-size: 32px;
+  color: #185233;
+  margin-bottom: 40px;
+}
+
+.price-plan-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 1350px;
+}
+
+.price-plan-table th, .price-plan-table td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.price-plan-table th {
+  background-color: #77c23e;
+  color: white;
+}
+
+.price-plan-table td {
+  background-color: #ffffff;
+  color: #333;
+}
+
+/* Schedule Section */
+.schedule-section {
+  padding: 60px 20px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.schedule-section h2 {
+  font-size: 32px;
+  color: #185233;
+  margin-bottom: 40px;
+}
+
+.schedule-table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  width: 1350px;
+}
+
+.schedule-table th, .schedule-table td {
+  padding: 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.schedule-table th {
+  background-color: #77c23e;
+  color: white;
+}
+
+.schedule-table td {
+  background-color: #ffffff;
+  color: #333;
+}

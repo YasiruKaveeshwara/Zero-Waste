@@ -1,6 +1,7 @@
 import React from "react";
 import "./headerStyles.css";
 import notificationIcon from "../../images/notification.png";
+import menuIcon from "../../images/menus.png"; // Importing the menu icon
 
 // Constants for routes
 const ROUTES = {
@@ -12,8 +13,15 @@ const ROUTES = {
 const Header = ({ toggleSidebar }) => {
   return (
     <div className="header">
-      <div className="logo-and-nav">
+      {/* Menu icon at the left corner */}
+      <img
+        src={menuIcon}
+        alt="Menu"
+        className="menu-icon"
+        onClick={toggleSidebar} // Optional: toggle sidebar on click
+      />
 
+      <div className="logo-and-nav">
         {/* Navigation links */}
         <nav className="navbar">
           <a href={ROUTES.home} className="nav-link">Home</a>
