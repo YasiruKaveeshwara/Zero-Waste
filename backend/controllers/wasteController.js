@@ -1,4 +1,5 @@
 const WasteRequest = require('../models/WasteRequest');
+const CollectionCenter = require('../models/Center');
 const mongoose = require('mongoose');
 
 // Create a new waste request
@@ -9,11 +10,17 @@ exports.createWasteRequest = async (req, res) => {
       return res.status(500).json({ message: 'Database connection is not established.' });
     }
 
-    const { wasteType, quantity, collectionDate, collectionTime } = req.body;
+    const { wasteType, quantity, collectionDate, collectionTime, collectionCenter } = req.body;
 
     // Validate request data
-    if (!wasteType || !quantity || !collectionDate || !collectionTime) {
-      return res.status(400).json({ message: 'All fields are required.' });
+    if (!wasteType || !quantity || !collectionDate || !collectionTime || !collectionCenter) {
+      return res.status(400).json({ message: 'All fields are required, including collection center.' });
+    }
+
+    // Check if the provided collectionCenter is valid
+    const validCenter = await CollectionCenter.findById(collectionCenter);
+    if (!validCenter) {
+      return res.status(400).json({ message: 'Invalid collection center selected.' });
     }
 
     // Create a new waste request
@@ -23,6 +30,7 @@ exports.createWasteRequest = async (req, res) => {
       quantity,
       collectionDate,
       collectionTime,
+      collectionCenter, // Reference to collection center
     });
 
     await newWasteRequest.save();
@@ -41,7 +49,8 @@ exports.getUserWasteRequests = async (req, res) => {
       return res.status(500).json({ message: 'Database connection is not established.' });
     }
 
-    const requests = await WasteRequest.find({ resident: req.user.id }).sort({ createdAt: -1 });
+    // Fetch waste requests with populated collection center information
+    const requests = await WasteRequest.find({ resident: req.user.id }).populate('collectionCenter').sort({ createdAt: -1 });
     res.status(200).json(requests);
   } catch (error) {
     console.error('Error fetching waste requests:', error);
@@ -57,9 +66,9 @@ exports.getWasteProgress = async (req, res) => {
       return res.status(500).json({ message: 'Database connection is not established.' });
     }
 
-    // Fetch waste requests only for the logged-in user
-    const wasteRequests = await WasteRequest.find({ resident: req.user.id });
-    
+    // Fetch waste requests only for the logged-in user with populated collection center info
+    const wasteRequests = await WasteRequest.find({ resident: req.user.id }).populate('collectionCenter');
+
     // If no waste requests are found
     if (!wasteRequests || wasteRequests.length === 0) {
       return res.status(404).json({ message: 'No waste requests found for this user.' });
@@ -76,18 +85,24 @@ exports.getWasteProgress = async (req, res) => {
 exports.updateWasteRequest = async (req, res) => {
   try {
     const { id } = req.params;
-    const { wasteType, quantity, collectionDate, collectionTime, status } = req.body;
+    const { wasteType, quantity, collectionDate, collectionTime, status, collectionCenter } = req.body;
 
     // Validate request data
-    if (!wasteType || !quantity || !collectionDate || !collectionTime) {
-      return res.status(400).json({ message: 'All fields are required.' });
+    if (!wasteType || !quantity || !collectionDate || !collectionTime || !collectionCenter) {
+      return res.status(400).json({ message: 'All fields are required, including collection center.' });
+    }
+
+    // Check if the provided collectionCenter is valid
+    const validCenter = await CollectionCenter.findById(collectionCenter);
+    if (!validCenter) {
+      return res.status(400).json({ message: 'Invalid collection center selected.' });
     }
 
     const updatedRequest = await WasteRequest.findByIdAndUpdate(
       id,
-      { wasteType, quantity, collectionDate, collectionTime, status },
+      { wasteType, quantity, collectionDate, collectionTime, status, collectionCenter },
       { new: true }
-    );
+    ).populate('collectionCenter'); // Populate collection center after update
 
     if (!updatedRequest) {
       return res.status(404).json({ message: 'Waste request not found.' });
@@ -117,4 +132,3 @@ exports.deleteWasteRequest = async (req, res) => {
     res.status(500).json({ message: 'Error deleting waste request.', error });
   }
 };
-

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import SidebarIcon from "../components/sidebar/SidebarIcon";
 import Header from "../components/header/Header";
@@ -16,7 +16,9 @@ function WasteRequest({ onRequestCreated }) {
     quantity: 1, // Default quantity set to 1
     collectionDate: null,
     collectionTime: "",
+    collectionCenter: "" // Add collection center field
   });
+  const [collectionCenters, setCollectionCenters] = useState([]); // State for collection centers
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
@@ -30,6 +32,26 @@ function WasteRequest({ onRequestCreated }) {
     "Electronics",
     "Hazardous"
   ];
+
+  // Fetch collection centers from the backend
+  useEffect(() => {
+    const fetchCollectionCenters = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Retrieve the token from local storage
+        const response = await axios.get('http://localhost:3050/api/auth/collection-centers', {
+          headers: {
+            Authorization: `Bearer ${token}` // Set the Authorization header with the Bearer token
+          }
+        });
+        setCollectionCenters(response.data); // Set collection centers
+      } catch (err) {
+        console.error("Error fetching collection centers", err);
+      }
+    };
+  
+    fetchCollectionCenters();
+  }, []);
+  
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -55,6 +77,7 @@ function WasteRequest({ onRequestCreated }) {
         quantity: 1,
         collectionDate: null,
         collectionTime: "",
+        collectionCenter: "" // Reset collection center
       });
 
       // Call the function to update the waste history data
@@ -164,6 +187,23 @@ function WasteRequest({ onRequestCreated }) {
                   onChange={(e) => handleFieldChange("collectionTime", e.target.value)}
                   required
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="collectionCenter">Select Collection Center</label>
+                <select
+                  id="collectionCenter"
+                  value={form.collectionCenter}
+                  onChange={(e) => handleFieldChange("collectionCenter", e.target.value)}
+                  required
+                >
+                  <option value="" disabled>Select collection center</option>
+                  {collectionCenters.map((center) => (
+                    <option key={center._id} value={center._id}>
+                      {center.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="form-group">

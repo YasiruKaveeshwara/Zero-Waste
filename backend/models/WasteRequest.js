@@ -27,6 +27,11 @@ const WasteRequestSchema = new mongoose.Schema({
     enum: ['pending', 'collected', 'canceled'],
     default: 'pending'
   },
+  collectionCenter: {
+    type: mongoose.Schema.Types.ObjectId, // Referencing the CollectionCenter model
+    ref: 'CollectionCenter',
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now
