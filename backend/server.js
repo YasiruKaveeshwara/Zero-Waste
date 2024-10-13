@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
+const centerRoutes = require("./routes/centerRoutes");
 const db = require("./db");
 
 dotenv.config();
@@ -25,6 +26,7 @@ db.connect()
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/centers", centerRoutes);
 
 // Only start the server if it's not in a test environment
 if (process.env.NODE_ENV !== "test") {
