@@ -15,7 +15,7 @@ function WasteHistory() {
   const [error, setError] = useState(null);
   const [editingRequest, setEditingRequest] = useState(null);
 
-  // Function to fetch waste data from the backend
+  // Fetch waste data from the backend
   const fetchWasteData = async () => {
     setLoading(true);
     setError(null); // Reset error state before fetching
@@ -139,8 +139,16 @@ function WasteHistory() {
                         {entry.status}
                       </td>
                       <td>
-                        <button onClick={() => handleEdit(entry)}>Edit</button>
-                        <button onClick={() => handleDelete(entry._id)}>
+                        <button
+                          className="action-button edit-button"
+                          onClick={() => handleEdit(entry)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="action-button delete-button"
+                          onClick={() => handleDelete(entry._id)}
+                        >
                           Delete
                         </button>
                       </td>
@@ -159,7 +167,7 @@ function WasteHistory() {
         </div>
 
         {editingRequest && (
-          <form onSubmit={handleEditSubmit}>
+          <form onSubmit={handleEditSubmit} className="edit-form-container">
             <h3>Edit Waste Request</h3>
             <input
               type="text"
@@ -203,7 +211,9 @@ function WasteHistory() {
                 })
               }
             />
-            <button type="submit">Submit Changes</button>
+            <button type="submit" className="submit-button">
+              Submit Changes
+            </button>
           </form>
         )}
         <Footer />

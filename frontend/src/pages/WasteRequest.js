@@ -13,12 +13,23 @@ import withAuth from '../hoc/withAuth';
 function WasteRequest({ onRequestCreated }) {
   const [form, setForm] = useState({
     wasteType: "",
-    quantity: "",
+    quantity: 1, // Default quantity set to 1
     collectionDate: null,
     collectionTime: "",
   });
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+
+  const wasteTypes = [
+    "Plastic",
+    "Organic",
+    "Metal",
+    "Paper",
+    "Glass",
+    "Wood",
+    "Electronics",
+    "Hazardous"
+  ];
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +52,7 @@ function WasteRequest({ onRequestCreated }) {
       // Reset the form fields
       setForm({
         wasteType: "",
-        quantity: "",
+        quantity: 1,
         collectionDate: null,
         collectionTime: "",
       });
@@ -63,6 +74,13 @@ function WasteRequest({ onRequestCreated }) {
     }));
   };
 
+  const handleQuantityChange = (increment) => {
+    setForm((prevState) => ({
+      ...prevState,
+      quantity: Math.max(1, prevState.quantity + increment),
+    }));
+  };
+
   return (
     <div className="waste-request-container">
       <SidebarIcon />
@@ -80,26 +98,50 @@ function WasteRequest({ onRequestCreated }) {
             <form onSubmit={handleFormSubmit} className="waste-request-form">
               <div className="form-group">
                 <label htmlFor="wasteType">Type of Waste</label>
-                <input
-                  type="text"
+                <select
                   id="wasteType"
                   value={form.wasteType}
                   onChange={(e) => handleFieldChange("wasteType", e.target.value)}
-                  placeholder="Enter waste type (e.g., Plastic, Organic)"
                   required
-                />
+                >
+                  <option value="" disabled>Select waste type</option>
+                  {wasteTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
+
               <div className="form-group">
-                <label htmlFor="quantity">Quantity</label>
-                <input
-                  type="text"
-                  id="quantity"
-                  value={form.quantity}
-                  onChange={(e) => handleFieldChange("quantity", e.target.value)}
-                  placeholder="Enter quantity (e.g., 50 kg)"
-                  required
-                />
+                <label htmlFor="quantity">Quantity (kg)</label>
+                <div className="quantity-container">
+                  <button
+                    type="button"
+                    className="quantity-btn"
+                    onClick={() => handleQuantityChange(-1)}
+                    disabled={form.quantity <= 1}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    id="quantity"
+                    value={form.quantity}
+                    onChange={(e) => handleFieldChange("quantity", parseInt(e.target.value))}
+                    min="1"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="quantity-btn"
+                    onClick={() => handleQuantityChange(1)}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
+
               <div className="form-group">
                 <label htmlFor="collectionDate">Preferred Collection Date</label>
                 <DatePicker
@@ -111,6 +153,7 @@ function WasteRequest({ onRequestCreated }) {
                   required
                 />
               </div>
+
               <div className="form-group">
                 <label htmlFor="collectionTime">Preferred Collection Time</label>
                 <input
@@ -121,6 +164,7 @@ function WasteRequest({ onRequestCreated }) {
                   required
                 />
               </div>
+
               <div className="form-group">
                 <button type="submit" className="submit-button">
                   Submit Request
