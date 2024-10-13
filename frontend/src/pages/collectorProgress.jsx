@@ -8,6 +8,12 @@ const CollectorProgress = () => {
   const [message, setMessage] = useState("");
   const [expandedRequests, setExpandedRequests] = useState({}); // State to track which requests are expanded
 
+  const clearMessageAfterTimeout = () => {
+    setTimeout(() => {
+      setMessage("");
+    }, 2000); // 2 seconds timer
+  };
+
   // Fetch collection requests based on filter
   useEffect(() => {
     fetchRequests();
@@ -19,6 +25,7 @@ const CollectorProgress = () => {
     const token = localStorage.getItem("authToken"); // Ensure token is retrieved
     if (!token) {
       setMessage("You are not authenticated. Please log in.");
+      clearMessageAfterTimeout();
       return;
     }
 
@@ -50,10 +57,12 @@ const CollectorProgress = () => {
       })
       .then(() => {
         setMessage(`Request status updated to ${isCollected ? "collected" : "pending"}!`);
+        clearMessageAfterTimeout();
         fetchRequests(); // Refresh the list after status update
       })
       .catch((error) => {
         setMessage("Error updating request status.");
+        clearMessageAfterTimeout();
       });
   };
 

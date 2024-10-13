@@ -113,36 +113,35 @@ exports.getRequestsByFilter = async (req, res) => {
   let startDate;
 
   switch (filter) {
-    case 'today':
+    case "today":
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       break;
-    case 'yesterday':
+    case "yesterday":
       startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
       break;
-    case 'week':
+    case "week":
       startDate = new Date(now.setDate(now.getDate() - now.getDay()));
       break;
-    case 'month':
+    case "month":
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
       break;
     default:
-      return res.status(400).json({ message: 'Invalid filter' });
+      return res.status(400).json({ message: "Invalid filter" });
   }
 
   try {
     // Fetch both pending and collected requests
     const requests = await WasteRequest.find({
-      collectionDate: { $gte: startDate }
+      collectionDate: { $gte: startDate },
     })
-    .populate('resident', 'residentName address') // Populates resident's name and address
-    .sort({ status: 1, collectionDate: -1 }); // Sort by status (pending first, then collected)
+      .populate("resident", "residentName address") // Populates resident's name and address
+      .sort({ status: 1, collectionDate: -1 }); // Sort by status (pending first, then collected)
 
     res.status(200).json(requests);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching requests', error });
+    res.status(500).json({ message: "Error fetching requests", error });
   }
 };
-
 
 // Mark the request as collected
 exports.markAsCollected = async (req, res) => {
@@ -171,16 +170,16 @@ exports.markAsPending = async (req, res) => {
   try {
     const request = await WasteRequest.findById(id);
     if (!request) {
-      return res.status(404).json({ message: 'Request not found' });
+      return res.status(404).json({ message: "Request not found" });
     }
 
     // Update the status to 'pending'
-    request.status = 'pending';
+    request.status = "pending";
     await request.save();
 
-    res.status(200).json({ message: 'Request marked as pending' });
+    res.status(200).json({ message: "Request marked as pending" });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating request status', error });
+    res.status(500).json({ message: "Error updating request status", error });
   }
 };
 

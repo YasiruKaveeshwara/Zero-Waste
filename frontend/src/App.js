@@ -1,21 +1,21 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import LoginForm from './components/forms/ResidentLoginform';
-import SignupForm from './components/forms/ResidentSignupForm';
-import Home from './pages/Home';
-import Progress from './pages/WasteRecycleProgress';
-import History from './pages/WasteHistory';
-import Request from './pages/WasteRequest';
-import ResidentProfile from './pages/ResidentProfile';
-import { AuthContextProvider } from './context/AuthContext';
-import { ResidentProvider } from './pages/ResidentContext';
-import NonRegHome from './pages/NonRegisteredHome';
-import CollectorSignUp from './pages/collectorSignUp';
-import CollectorSignIn from './pages/collectorSignIn';
-import CollectorDashboard from './pages/collectorDashboard';
-import CollectorProfile from './pages/collectorProfile';
-import CollectorRoutesLayout from './routes/collectorRoutes'; // Layout with header for collectors
-import CollectorProgress from './pages/collectorProgress';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import LoginForm from "./components/forms/ResidentLoginform";
+import SignupForm from "./components/forms/ResidentSignupForm";
+import Home from "./pages/Home";
+import Progress from "./pages/WasteRecycleProgress";
+import History from "./pages/WasteHistory";
+import Request from "./pages/WasteRequest";
+import ResidentProfile from "./pages/ResidentProfile";
+import { AuthContextProvider } from "./context/AuthContext";
+import { ResidentProvider } from "./pages/ResidentContext";
+import NonRegHome from "./pages/NonRegisteredHome";
+import CollectorSignUp from "./pages/collectorSignUp";
+import CollectorSignIn from "./pages/collectorSignIn";
+import CollectorDashboard from "./pages/collectorDashboard";
+import CollectorProfile from "./pages/collectorProfile";
+import CollectorRoutesLayout from "./routes/collectorRoutes"; // Layout with header for collectors
+import CollectorProgress from "./pages/collectorProgress";
 
 function App() {
   return (
@@ -43,7 +43,7 @@ function App() {
             {/* Collector Dashboard and Protected Routes with Header */}
             <Route path='/collector' element={<CollectorRoutesLayout />}>
               <Route path='dashboard' element={<CollectorDashboard />} />
-              <Route path='profile' element={<CollectorProfile/>}/>
+              <Route path='profile' element={<CollectorProfile />} />
               <Route path='progress' element={<CollectorProgress />} />
             </Route>
           </Routes>
