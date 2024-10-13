@@ -10,6 +10,12 @@ import ResidentProfile from './pages/ResidentProfile';
 import { AuthContextProvider } from './context/AuthContext';
 import { ResidentProvider } from './pages/ResidentContext';
 import NonRegHome from './pages/NonRegisteredHome';
+import CollectorSignUp from './pages/collectorSignUp';
+import CollectorSignIn from './pages/collectorSignIn';
+import CollectorDashboard from './pages/collectorDashboard';
+import CollectorProfile from './pages/collectorProfile';
+import CollectorRoutesLayout from './routes/collectorRoutes'; // Layout with header for collectors
+import CollectorProgress from './pages/collectorProgress';
 
 function App() {
   return (
@@ -29,6 +35,17 @@ function App() {
             <Route path='/resident-request' element={<Request />} />
             <Route path='/waste-progress' element={<Progress />} />
             <Route path='/resident-profile' element={<ResidentProfile />} />
+
+            {/* Collector Routes */}
+            <Route path='/collector-signup' element={<CollectorSignUp />} />
+            <Route path='/collector-signin' element={<CollectorSignIn />} />
+
+            {/* Collector Dashboard and Protected Routes with Header */}
+            <Route path='/collector' element={<CollectorRoutesLayout />}>
+              <Route path='dashboard' element={<CollectorDashboard />} />
+              <Route path='profile' element={<CollectorProfile/>}/>
+              <Route path='progress' element={<CollectorProgress />} />
+            </Route>
           </Routes>
         </ResidentProvider>
       </AuthContextProvider>
