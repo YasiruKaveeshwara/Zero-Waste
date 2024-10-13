@@ -56,24 +56,7 @@ const TESTIMONIALS = [
     name: "Sarah J., Business Owner",
     quote: "Eco Waste Management has completely transformed our approach to waste disposal. Highly recommend!",
   },
-  {
-    img: User2,
-    alt: "User",
-    name: "John D., Eco Enthusiast",
-    quote: "Their commitment to sustainability and the environment is truly impressive.",
-  },
-  {
-    img: User1,
-    alt: "User",
-    name: "Sarah J., Business Owner",
-    quote: "Eco Waste Management has completely transformed our approach to waste disposal. Highly recommend!",
-  },
-  {
-    img: User2,
-    alt: "User",
-    name: "John D., Eco Enthusiast",
-    quote: "Their commitment to sustainability and the environment is truly impressive.",
-  }
+  
 ];
 
 // Define the Home component

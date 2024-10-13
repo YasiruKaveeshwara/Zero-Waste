@@ -49,7 +49,7 @@ exports.getUserWasteRequests = async (req, res) => {
   }
 };
 
-// Get waste progress data
+// Get waste progress data for logged-in user
 exports.getWasteProgress = async (req, res) => {
   try {
     // Check if the database connection is ready
@@ -57,7 +57,14 @@ exports.getWasteProgress = async (req, res) => {
       return res.status(500).json({ message: 'Database connection is not established.' });
     }
 
-    const wasteRequests = await WasteRequest.find();
+    // Fetch waste requests only for the logged-in user
+    const wasteRequests = await WasteRequest.find({ resident: req.user.id });
+    
+    // If no waste requests are found
+    if (!wasteRequests || wasteRequests.length === 0) {
+      return res.status(404).json({ message: 'No waste requests found for this user.' });
+    }
+
     res.status(200).json(wasteRequests);
   } catch (error) {
     console.error('Error fetching waste progress data:', error);

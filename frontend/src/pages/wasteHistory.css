@@ -1,15 +1,14 @@
 .waste-history-container {
   display: flex;
-  background-color: #f4f8f6;
+  background-color: #ffffff;
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
 }
 
 .main-content {
   margin-left: 220px;
-  padding: 40px;
   width: 85%;
-  background-color: #f4f8f6;
+  background-color: #fafafa;
 }
 
 .search-container {

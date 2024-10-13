@@ -13,7 +13,7 @@ import Logo from "../../images/leaf.png";
 const ROUTES = {
   dashboard: "/resident-home",
   profile: "/resident-profile",
-  payment: "/products",
+  payment: "/payment",
   requests: "/resident-request",
   progress: "/waste-progress",
   history: "/resident-history",

@@ -55,7 +55,9 @@
     outline: none;
     transition: border-color 0.3s ease;
   }
-  
+  .main-content{
+    background-color: #ffffff !important;
+  }
   .formField:focus {
     border-color: #77c23e;
   }

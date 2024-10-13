@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Progress from './pages/WasteRecycleProgress';
 import History from './pages/WasteHistory';
 import Request from './pages/WasteRequest';
+import Payment from './pages/PaymentPage';
+import Logout from './pages/Logout';
 import ResidentProfile from './pages/ResidentProfile';
 import { AuthContextProvider } from './context/AuthContext';
 import { ResidentProvider } from './pages/ResidentContext';
@@ -22,6 +24,8 @@ function App() {
             <Route path='/resident-signup' element={<SignupForm />} />
             <Route path='/resident-nonreghome' element={<NonRegHome />} />
             <Route path='/resident-login' element={<LoginForm />} />
+            <Route path='/payment' element={<Payment />} />
+            <Route path="/logout" element={<Logout />} />
 
             {/* Protected Routes */}
             <Route path='/resident-home' element={<Home />} />
