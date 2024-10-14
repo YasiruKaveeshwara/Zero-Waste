@@ -2,22 +2,36 @@ const ScheduleFactory = require("../factories/ScheduleFactory");
 const Schedule = require("../models/Schedule");
 const Collector = require("../models/collector");
 const Center = require("../models/Center");
+const Vehicle = require("../models/Vehicle");
 
 // Create a new schedule for garbage collectors
 exports.createSchedule = async (req, res) => {
   try {
     const { collectorId, centerId, vehicleId, date, time } = req.body;
 
-    // Check if the collector and center exist
-    const collector = await Collector.findById(collectorId);
-    const center = await Center.findById(centerId);
-    if (!collector || !center) {
-      return res
-        .status(400)
-        .json({ message: "Collector or Center not found." });
+    // Validate input
+    if (!collectorId || !centerId || !vehicleId || !date || !time) {
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Create a schedule using the factory pattern
+    // Check if the collector, center, and vehicle exist
+    const [collector, center, vehicle] = await Promise.all([
+      Collector.findById(collectorId),
+      Center.findById(centerId),
+      Vehicle.findById(vehicleId),
+    ]);
+
+    if (!collector || !center || !vehicle) {
+      return res.status(400).json({ message: "Invalid collector, center, or vehicle." });
+    }
+
+    // Check if a schedule already exists for the same time and date
+    const existingSchedule = await Schedule.findOne({ date, time, collector: collectorId });
+    if (existingSchedule) {
+      return res.status(409).json({ message: "A schedule already exists for this collector at the specified date and time." });
+    }
+
+    // Create a new schedule using the factory pattern
     const newSchedule = ScheduleFactory.createSchedule({
       collector: collectorId,
       center: centerId,
@@ -28,10 +42,10 @@ exports.createSchedule = async (req, res) => {
 
     await newSchedule.save();
 
-    res.status(201).json({ message: "Schedule created successfully." });
+    return res.status(201).json({ message: "Schedule created successfully.", schedule: newSchedule });
   } catch (error) {
     console.error("Error creating schedule:", error);
-    res.status(500).json({ message: "Error creating schedule.", error });
+    return res.status(500).json({ message: "Error creating schedule.", error });
   }
 };
 
@@ -39,26 +53,40 @@ exports.createSchedule = async (req, res) => {
 exports.getCollectorSchedules = async (req, res) => {
   try {
     const { collectorId } = req.params;
-    const schedules = await Schedule.find({ collector: collectorId }).populate(
-      "center"
-    );
-    res.status(200).json(schedules);
+    if (!collectorId) {
+      return res.status(400).json({ message: "Collector ID is required." });
+    }
+
+    const schedules = await Schedule.find({ collector: collectorId })
+      .populate("center")
+      .populate("vehicle");
+
+    if (!schedules.length) {
+      return res.status(404).json({ message: "No schedules found for this collector." });
+    }
+
+    return res.status(200).json(schedules);
   } catch (error) {
     console.error("Error fetching schedules:", error);
-    res.status(500).json({ message: "Error fetching schedules.", error });
+    return res.status(500).json({ message: "Error fetching schedules.", error });
   }
 };
 
-
-
-
 // Get all schedules
 exports.getAllSchedules = async (req, res) => {
-    try {
-      const schedules = await Schedule.find().populate("collector center");
-      res.status(200).json(schedules);
-    } catch (error) {
-      console.error("Error fetching all schedules:", error);
-      res.status(500).json({ message: "Error fetching all schedules.", error });
+  try {
+    const schedules = await Schedule.find()
+      .populate("collector", "name") // Populate collector details (only name field)
+      .populate("center", "name") // Populate center details (only name field)
+      .populate("vehicle", "name licensePlate"); // Populate vehicle details (name and licencePlate)
+
+    if (!schedules.length) {
+      return res.status(404).json({ message: "No schedules found." });
     }
-  };
+
+    return res.status(200).json(schedules);
+  } catch (error) {
+    console.error("Error fetching schedules:", error);
+    return res.status(500).json({ message: "Error fetching schedules.", error });
+  }
+};

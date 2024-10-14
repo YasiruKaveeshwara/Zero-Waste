@@ -17,8 +17,11 @@ import AdminCollectionCentres from "./pages/AdminCollectionCentres";
 import AdminPeakMonitoring from "./pages/AdminPeakMonitoring";
 import AdminCentreDetails from "./pages/AdminCentreDetails";
 import AdminDashboard from "./pages/AdminDashboard";
+
 import CreateSchedule from "./pages/CreateSchedule";
 import CollectorSchedules from "./pages/CollectorSchedules";
+import SchedulePage from "./pages/SchedulePage"; // Import the SchedulePage component
+import TestPage from "./pages/TestPage"; // Import the SchedulePage component
 // Protected route
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -33,14 +36,14 @@ function App() {
             <Route path="/resident-signup" element={<SignupForm />} />
             <Route path="/resident-nonreghome" element={<NonRegHome />} />
             <Route path="/resident-login" element={<LoginForm />} />
-
             {/* Protected Routes for Residents */}
             <Route path="/resident-home" element={<Home />} />
             <Route path="/resident-history" element={<History />} />
             <Route path="/resident-request" element={<Request />} />
             <Route path="/waste-progress" element={<Progress />} />
             <Route path="/resident-profile" element={<ResidentProfile />} />
-
+            <Route path="/collector-schedules" element={<SchedulePage />} />{" "}
+            {/* Route for the Schedule Page */}
             {/* Admin Routes */}
             <Route path="/admin-login" element={<AdminLogin />} />
             {/* Protect all admin routes */}
@@ -76,7 +79,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             {/* New Admin Routes for Scheduling */}
             <Route
               path="/create-schedule"

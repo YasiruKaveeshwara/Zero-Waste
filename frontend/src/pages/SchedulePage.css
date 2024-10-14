@@ -1,0 +1,96 @@
+/* Highlight dates with schedules */
+.react-calendar__tile.highlight {
+    background: linear-gradient(135deg, #38a169 0%, #4caf50 100%); /* Gradient green background */
+    color: white;
+    border-radius: 50%; /* Make the highlighted dates circular */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+    transform: scale(1.05); /* Slight scale-up to emphasize scheduled dates */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+  }
+  
+  /* Hover and focus effects on scheduled dates */
+  .react-calendar__tile.highlight:hover,
+  .react-calendar__tile.highlight:focus {
+    background: linear-gradient(135deg, #2f855a 0%, #43a047 100%); /* Darker green gradient on hover */
+    transform: scale(1.1); /* Slightly larger when hovered */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+  }
+  
+  /* Hover and focus effects on non-highlighted dates */
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background-color: #3182ce; /* Blue hover effect for regular tiles */
+    color: white;
+    border-radius: 50%;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  /* Today’s date */
+  .react-calendar__tile--now {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Purple gradient for today */
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Hover effects for today’s date */
+  .react-calendar__tile--now:hover,
+  .react-calendar__tile--now:focus {
+    background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%); /* Darker purple on hover */
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Default calendar tile styles */
+  .react-calendar__tile {
+    font-size: 1rem;
+    padding: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  /* Calendar styling */
+  .react-calendar {
+    border: none;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .react-calendar__navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  
+  .react-calendar__navigation button {
+    background-color: #f7fafc;
+    color: #2d3748;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .react-calendar__navigation button:hover {
+    background-color: #edf2f7;
+  }
+  
+  .react-calendar__month-view__weekdays {
+    color: #4a5568;
+    font-weight: bold;
+  }
+  
+  .react-calendar__month-view__days__day--weekend {
+    color: #e53e3e;
+  }
+  
+  .react-calendar__month-view__days__day--neighboringMonth {
+    color: #a0aec0;
+  }
+  
