@@ -1,6 +1,6 @@
 // controllers/collectorController.js
 const CollectorFactory = require("../factories/collectorFactory");
-const Collector = require("../models/Collector");
+const Collector = require("../models/collector");
 const jwt = require("jsonwebtoken");
 
 // Signup collector (using the factory pattern)
@@ -101,5 +101,16 @@ exports.updateProfile = async (req, res) => {
     res.status(200).json({ message: "Profile updated successfully.", collector });
   } catch (error) {
     res.status(500).json({ message: "Error updating profile.", error });
+  }
+};
+
+// Get all collectors (workers)
+exports.getAllCollectors = async (req, res) => {
+  try {
+    const collectors = await Collector.find(); // Fetch all collectors from the database
+    res.status(200).json(collectors);
+  } catch (error) {
+    console.error("Error fetching collectors:", error);
+    res.status(500).json({ message: "Error fetching collectors.", error });
   }
 };

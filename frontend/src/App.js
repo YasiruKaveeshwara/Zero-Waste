@@ -19,7 +19,6 @@ import AdminCentreDetails from "./pages/AdminCentreDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 
 import CreateSchedule from "./pages/CreateSchedule";
-import CollectorSchedules from "./pages/CollectorSchedules";
 import SchedulePage from "./pages/SchedulePage"; // Import the SchedulePage component
 import TestPage from "./pages/TestPage"; // Import the SchedulePage component
 // Protected route
@@ -85,14 +84,6 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CreateSchedule />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/collector-schedules"
-              element={
-                <ProtectedRoute>
-                  <CollectorSchedules />
                 </ProtectedRoute>
               }
             />

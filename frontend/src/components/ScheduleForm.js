@@ -75,17 +75,21 @@ const ScheduleForm = () => {
   };
 
   return (
-    <form className="bg-white p-6 shadow-md" onSubmit={handleSubmit}>
-      <h2 className="text-xl font-bold mb-4">Create Schedule</h2>
+    <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
+      <h2 className="text-3xl font-bold mb-6 text-green-600 text-center">
+        Create Schedule
+      </h2>
 
       {/* Show error message if there's an error */}
-      {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
       {/* Select Collection Center */}
-      <div className="mb-4">
-        <label className="block mb-2">Select Collection Center</label>
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-semibold text-gray-700">
+          Select Collection Center
+        </label>
         <select
-          className="w-full p-2 border"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           onChange={(e) =>
             setFormData({ ...formData, centerId: e.target.value })
           }
@@ -100,10 +104,12 @@ const ScheduleForm = () => {
       </div>
 
       {/* Select Garbage Collector */}
-      <div className="mb-4">
-        <label className="block mb-2">Select Garbage Collector</label>
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-semibold text-gray-700">
+          Select Garbage Collector
+        </label>
         <select
-          className="w-full p-2 border"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           onChange={(e) =>
             setFormData({ ...formData, collectorId: e.target.value })
           }
@@ -118,10 +124,12 @@ const ScheduleForm = () => {
       </div>
 
       {/* Select Vehicle */}
-      <div className="mb-4">
-        <label className="block mb-2">Select Vehicle</label>
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-semibold text-gray-700">
+          Select Vehicle
+        </label>
         <select
-          className="w-full p-2 border"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           onChange={(e) =>
             setFormData({ ...formData, vehicleId: e.target.value })
           }
@@ -136,21 +144,25 @@ const ScheduleForm = () => {
       </div>
 
       {/* Select Date */}
-      <div className="mb-4">
-        <label className="block mb-2">Date</label>
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-semibold text-gray-700">
+          Date
+        </label>
         <input
           type="date"
-          className="w-full p-2 border"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           onChange={(e) => setFormData({ ...formData, date: e.target.value })}
         />
       </div>
 
       {/* Select Time */}
-      <div className="mb-4">
-        <label className="block mb-2">Time</label>
+      <div className="mb-6">
+        <label className="block mb-2 text-lg font-semibold text-gray-700">
+          Time
+        </label>
         <input
           type="time"
-          className="w-full p-2 border"
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
           onChange={(e) => setFormData({ ...formData, time: e.target.value })}
         />
       </div>
@@ -158,11 +170,12 @@ const ScheduleForm = () => {
       {/* Submit Button */}
       <button
         type="submit"
-        className="bg-green-500 text-white p-2 w-full hover:bg-green-600"
+        onClick={handleSubmit}
+        className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md font-bold text-lg"
       >
         Create Schedule
       </button>
-    </form>
+    </div>
   );
 };
 

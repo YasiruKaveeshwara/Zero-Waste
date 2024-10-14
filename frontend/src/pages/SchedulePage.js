@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // Import Link for routing
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
@@ -97,25 +96,13 @@ const SchedulePage = () => {
 
   return (
     <AdminDashboardLayout>
-      {/* Button to Link to Create Schedule Page */}
-      <div className="flex justify-end mb-6">
-        <Link
-          to="/create-schedule" // Link to the "Create Schedule" page
-          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
-        >
-          Create Schedule
-        </Link>
-      </div>
-
       <div className="max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg shadow-lg mt-8">
         <h1 className="text-4xl font-bold text-center text-blue-700 mb-8">
-          View or Create a Schedule
+          Collector Schedule
         </h1>
 
         <div className="calendar-container mb-10">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-            Select a Date
-          </h2>
+
           <div className="bg-white p-4 rounded-lg shadow-md">
             <Calendar
               onChange={(date) => {
@@ -160,7 +147,7 @@ const SchedulePage = () => {
           </p>
         )}
 
-        <div className="time-slots mb-10">
+        {/* <div className="time-slots mb-10">
           <h2 className="text-2xl font-semibold text-gray-700 mb-4">
             Select a Time Slot
           </h2>
@@ -179,7 +166,7 @@ const SchedulePage = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex justify-center">
           <button
