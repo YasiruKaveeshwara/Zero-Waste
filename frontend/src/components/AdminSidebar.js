@@ -1,11 +1,11 @@
-// src/components/AdminSidebar.js
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaBuilding,
   FaChartLine,
-  FaSignOutAlt
+  FaClipboardList, // Import the schedule icon
+  FaSignOutAlt,
 } from "react-icons/fa"; // Import icons from react-icons
 
 const AdminSidebar = () => {
@@ -49,6 +49,15 @@ const AdminSidebar = () => {
             >
               <FaChartLine className="mr-2" />
               Peak Monitoring
+            </Link>
+          </li>
+          <li className="mb-2">
+            <Link
+              to="/collector-schedules"
+              className="flex items-center hover:underline"
+            >
+              <FaClipboardList className="mr-2" />
+              Schedules
             </Link>
           </li>
         </ul>

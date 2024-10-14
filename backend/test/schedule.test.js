@@ -1,51 +1,48 @@
 const request = require("supertest");
-const app = require("../server");
-const Schedule = require("../models/Schedule");
-const GarbageCollector = require("../models/GarbageCollector");
-const Center = require("../models/Center");
+const app = require("../server"); // Import your server
 
 describe("Schedule API Tests", () => {
-  it("should create a new schedule", async () => {
-    const collector = await GarbageCollector.create({
-      name: "Collector 1",
+  it("should create a new schedule successfully", async () => {
+    const collector = await request(app).post("/api/collector/signup").send({
+      name: "Test Collector",
       phone: "123456789",
+      email: "collector@test.com",
+      password: "password123",
+      city: "Test City",
     });
-    const center = await Center.create({
-      name: "Center 1",
-      location: "Location 1",
+
+    const center = await request(app).post("/api/centers").send({
+      name: "Test Center",
+      location: "Test Location",
       capacity: 100,
     });
 
-    const response = await request(app).post("/api/schedule").send({
-      collectorId: collector._id,
-      centerId: center._id,
+    const res = await request(app).post("/api/schedule").send({
+      collectorId: collector.body._id,
+      centerId: center.body._id,
       date: "2024-10-15",
       time: "10:00 AM",
     });
 
-    expect(response.statusCode).toBe(201);
-    expect(response.body.message).toBe("Schedule created successfully.");
-  });
-
-  it("should return schedules for a collector", async () => {
-    const collector = await GarbageCollector.create({
-      name: "Collector 2",
-      phone: "987654321",
-    });
-    const schedules = await request(app).get(
-      `/api/collector/${collector._id}/schedules`
+    expect(res.statusCode).toEqual(201);
+    expect(res.body).toHaveProperty(
+      "message",
+      "Schedule created successfully."
     );
-
-    expect(schedules.statusCode).toBe(200);
-    expect(schedules.body).toBeInstanceOf(Array);
   });
 
-  it("should handle errors during schedule creation", async () => {
-    const response = await request(app).post("/api/schedule").send({
+  it("should return error if collector or center is not found", async () => {
+    const res = await request(app).post("/api/schedule").send({
+      collectorId: "non-existent-collector-id",
+      centerId: "non-existent-center-id",
       date: "2024-10-15",
       time: "10:00 AM",
     });
 
-    expect(response.statusCode).toBe(400);
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty(
+      "message",
+      "Collector or Center not found."
+    );
   });
 });

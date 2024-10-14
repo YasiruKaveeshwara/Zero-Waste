@@ -4,15 +4,18 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const centerRoutes = require("./routes/centerRoutes");
+const scheduleRoutes = require("./routes/scheduleRoutes");
+const collectorRoutes = require("./routes/collectorRoutes"); // Collector routes
+const vehicleRoutes = require("./routes/vehicleRoutes");
 const db = require("./db");
 
-dotenv.config();
+dotenv.config(); // Load environment variables
 
 const app = express();
 const PORT = process.env.PORT || 3050;
 
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors()); // Enable CORS
+app.use(bodyParser.json()); // Parse incoming requests with JSON payloads
 
 // Ensure database connection is established
 db.connect()
@@ -21,12 +24,29 @@ db.connect()
   })
   .catch((err) => {
     console.error("Database connection failed", err);
-    process.exit(1);
+    process.exit(1); // Exit process if the connection fails
   });
 
+
+
+
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/centers", centerRoutes);
+app.use("/api/auth", authRoutes); // Authentication routes
+app.use("/api/centers", centerRoutes); // Center routes
+app.use("/api/schedule", scheduleRoutes); // Scheduling routes
+app.use("/api/collector", collectorRoutes); // Collector routes
+app.use("/api/vehicles", vehicleRoutes);
+
+// 404 error handling for unknown routes
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// Global error handler for unexpected errors
+app.use((err, req, res, next) => {
+  console.error("Unexpected error:", err);
+  res.status(500).json({ message: "An unexpected error occurred" });
+});
 
 // Only start the server if it's not in a test environment
 if (process.env.NODE_ENV !== "test") {

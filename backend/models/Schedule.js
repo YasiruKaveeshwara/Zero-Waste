@@ -4,12 +4,17 @@ const ScheduleSchema = new mongoose.Schema(
   {
     collector: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "GarbageCollector",
+      ref: "Collector",
       required: true,
     },
     center: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Center",
+      ref: "CollectionCenter",
+      required: true,
+    },
+    vehicle: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Vehicle",
       required: true,
     },
     date: {

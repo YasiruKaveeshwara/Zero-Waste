@@ -16,6 +16,9 @@ import AdminDashboardLayout from "./pages/AdminDashboardLayout";
 import AdminCollectionCentres from "./pages/AdminCollectionCentres";
 import AdminPeakMonitoring from "./pages/AdminPeakMonitoring";
 import AdminCentreDetails from "./pages/AdminCentreDetails";
+import AdminDashboard from "./pages/AdminDashboard";
+import CreateSchedule from "./pages/CreateSchedule";
+import CollectorSchedules from "./pages/CollectorSchedules";
 // Protected route
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -70,6 +73,24 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminCentreDetails />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* New Admin Routes for Scheduling */}
+            <Route
+              path="/create-schedule"
+              element={
+                <ProtectedRoute>
+                  <CreateSchedule />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/collector-schedules"
+              element={
+                <ProtectedRoute>
+                  <CollectorSchedules />
                 </ProtectedRoute>
               }
             />

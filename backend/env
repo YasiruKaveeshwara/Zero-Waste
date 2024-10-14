@@ -1,0 +1,5 @@
+
+PORT=3050
+JWT_SECRET=N8D3K2lP0xQ9mNsV7yW5zR8tUvXyZpQ1
+
+MONGODB_URL = mongodb+srv://y3s1spmproject:y3s1csse@wastezerodb.6azcp.mongodb.net/WasteZeroDB?retryWrites=true&w=majority&appName=WasteZeroDB
