@@ -1,186 +1,169 @@
 import React, { useState, useEffect } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import axios from "axios";
-import "./SchedulePage.css"; // CSS for additional styling
-import AdminDashboardLayout from "../pages/AdminDashboardLayout";
 
-const SchedulePage = () => {
-  const [date, setDate] = useState(new Date()); // State to store selected date
-  const [selectedTime, setSelectedTime] = useState(""); // State to store selected time slot
-  const [availableTimeSlots] = useState([
-    "09:00 AM - 12:00 PM",
-    "01:00 PM - 04:00 PM",
-  ]); // Time slots
-  const [scheduledDates, setScheduledDates] = useState([]); // State to store scheduled dates
-  const [scheduleInfo, setScheduleInfo] = useState(null); // State to store schedule information for the selected date
+const ScheduleForm = () => {
+  const [collectors, setCollectors] = useState([]);
+  const [centers, setCenters] = useState([]);
+  const [vehicles, setVehicles] = useState([]); // State for vehicles
+  const [formData, setFormData] = useState({
+    collectorId: "",
+    centerId: "",
+    vehicleId: "", // Field for selected vehicle
+    date: "",
+    time: "",
+  });
+  const [error, setError] = useState(null);
 
-  // Fetch scheduled dates from the server
+  // Fetch collectors
   useEffect(() => {
-    const fetchScheduledDates = async () => {
+    const fetchCollectors = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3050/api/schedule/getAll"
+        const collectorsRes = await axios.get(
+          "http://localhost:3050/api/collector"
         );
-        const schedules = response.data;
-
-        // Extract dates from schedules and format them
-        const formattedDates = schedules.map((schedule) => ({
-          date: new Date(schedule.date).toDateString(),
-          info: schedule,
-        }));
-
-        setScheduledDates(formattedDates);
-      } catch (error) {
-        console.error("Error fetching scheduled dates:", error);
+        setCollectors(collectorsRes.data);
+      } catch (err) {
+        setError("Failed to fetch collectors.");
+        console.error("Error fetching collectors:", err);
       }
     };
-    fetchScheduledDates();
+    fetchCollectors();
   }, []);
 
-  // Handle time slot selection
-  const handleTimeSlotSelection = (slot) => {
-    setSelectedTime(slot);
-  };
+  // Fetch centers
+  useEffect(() => {
+    const fetchCenters = async () => {
+      try {
+        const centersRes = await axios.get("http://localhost:3050/api/centers");
+        setCenters(centersRes.data);
+      } catch (err) {
+        setError("Failed to fetch centers.");
+        console.error("Error fetching centers:", err);
+      }
+    };
+    fetchCenters();
+  }, []);
 
-  // Handle date click
-  const handleDateClick = (selectedDate) => {
-    const selectedSchedule = scheduledDates.find(
-      (scheduledDate) => scheduledDate.date === selectedDate.toDateString()
-    );
-    if (selectedSchedule) {
-      setScheduleInfo(selectedSchedule.info); // Display schedule info for the clicked date
-    } else {
-      setScheduleInfo(null); // Clear schedule info if no schedule is available for the selected date
-    }
-  };
+  // Fetch vehicles based on selected center
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      if (formData.centerId) {
+        try {
+          // Convert formData.centerId to a string before passing it in the query
+          const vehiclesRes = await axios.get(
+            `http://localhost:3050/api/vehicles/getVehicles/${formData.centerId.toString()}`
+          );
+          setVehicles(vehiclesRes.data);
+        } catch (err) {
+          setError("Failed to fetch vehicles.");
+          console.error("Error fetching vehicles:", err);
+        }
+      }
+    };
+    fetchVehicles();
+  }, [formData.centerId]); // Fetch when centerId changes
 
-  // Handle form submission to create schedule
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!selectedTime) {
-      alert("Please select a time slot");
-      return;
-    }
-
-    const scheduleData = {
-      date,
-      time: selectedTime,
-      collectorId: "some_collector_id", // Replace with actual collector ID
-      centerId: "some_center_id", // Replace with actual center ID
-    };
-
     try {
-      const response = await axios.post(
-        "http://localhost:3050/api/schedule/create",
-        scheduleData
-      );
-      alert("Schedule created successfully");
+      await axios.post("http://localhost:3050/api/schedule/create", formData);
+      alert("Schedule Created Successfully");
     } catch (error) {
+      setError("Failed to create schedule.");
       console.error("Error creating schedule:", error);
     }
   };
 
-  // Function to determine if a date has a schedule
-  const tileClassName = ({ date }) => {
-    if (
-      scheduledDates.some(
-        (scheduledDate) => scheduledDate.date === date.toDateString()
-      )
-    ) {
-      return "highlight";
-    }
-    return "";
-  };
-
   return (
-    <AdminDashboardLayout>
-      <div className="max-w-4xl mx-auto p-8 bg-gray-100 rounded-lg shadow-lg mt-8">
-        <h1 className="text-4xl font-bold text-center text-blue-700 mb-8">
-          Create a New Schedule
-        </h1>
+    <form className="bg-white p-6 shadow-md" onSubmit={handleSubmit}>
+      <h2 className="text-xl font-bold mb-4">Create Schedule</h2>
 
-        <div className="calendar-container mb-10">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-            Select a Date
-          </h2>
-          <div className="bg-white p-4 rounded-lg shadow-md">
-            <Calendar
-              onChange={(date) => {
-                setDate(date);
-                handleDateClick(date); // Trigger handleDateClick when a date is selected
-              }}
-              value={date}
-              selectRange={false} // Single date selection
-              tileClassName={tileClassName} // Apply dynamic styling to tiles
-              className="w-full" // Full width for calendar
-            />
-          </div>
-        </div>
+      {/* Show error message if there's an error */}
+      {/* {error && <div className="text-red-500 mb-4">{error}</div>} */}
 
-        {/* Display the schedule information if it exists */}
-        {scheduleInfo ? (
-          <div className="bg-white p-6 rounded-lg shadow-md mb-10">
-            <h3 className="text-xl font-bold mb-4 text-green-600">
-              Schedule Details for{" "}
-              {new Date(scheduleInfo.date).toLocaleDateString()}
-            </h3>
-            <p>
-              <strong>Collector:</strong> {scheduleInfo.collector.name}
-            </p>
-            <p>
-              <strong>Center:</strong> {scheduleInfo.center.name}
-            </p>
-            <p>
-              <strong>Vehicle:</strong> {scheduleInfo.vehicle.name} (
-              {scheduleInfo.vehicle.licensePlate})
-            </p>
-            <p>
-              <strong>Time Slot:</strong> {scheduleInfo.time}
-            </p>
-            <p>
-              <strong>Status:</strong> {scheduleInfo.status}
-            </p>
-          </div>
-        ) : (
-          <p className="text-gray-600 mb-6">
-            No schedule for the selected date.
-          </p>
-        )}
-
-        <div className="time-slots mb-10">
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-            Select a Time Slot
-          </h2>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {availableTimeSlots.map((slot) => (
-              <button
-                key={slot}
-                className={`p-4 w-52 text-center font-semibold rounded-lg shadow-md transition-transform transform hover:scale-105 ${
-                  selectedTime === slot
-                    ? "bg-green-500 text-white"
-                    : "bg-white border border-gray-300"
-                }`}
-                onClick={() => handleTimeSlotSelection(slot)}
-              >
-                {slot}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex justify-center">
-          <button
-            onClick={handleSubmit}
-            className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 ease-in-out hover:bg-blue-700 hover:shadow-xl transform hover:-translate-y-1"
-          >
-            Create Schedule
-          </button>
-        </div>
+      {/* Select Collection Center */}
+      <div className="mb-4">
+        <label className="block mb-2">Select Collection Center</label>
+        <select
+          className="w-full p-2 border"
+          onChange={(e) =>
+            setFormData({ ...formData, centerId: e.target.value })
+          }
+        >
+          <option>Select Center</option>
+          {centers.map((center) => (
+            <option key={center._id} value={center._id}>
+              {center.name}
+            </option>
+          ))}
+        </select>
       </div>
-    </AdminDashboardLayout>
+
+      {/* Select Garbage Collector */}
+      <div className="mb-4">
+        <label className="block mb-2">Select Garbage Collector</label>
+        <select
+          className="w-full p-2 border"
+          onChange={(e) =>
+            setFormData({ ...formData, collectorId: e.target.value })
+          }
+        >
+          <option>Select Collector</option>
+          {collectors.map((collector) => (
+            <option key={collector._id} value={collector._id}>
+              {collector.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Select Vehicle */}
+      <div className="mb-4">
+        <label className="block mb-2">Select Vehicle</label>
+        <select
+          className="w-full p-2 border"
+          onChange={(e) =>
+            setFormData({ ...formData, vehicleId: e.target.value })
+          }
+        >
+          <option>Select Vehicle</option>
+          {vehicles.map((vehicle) => (
+            <option key={vehicle._id} value={vehicle._id}>
+              {vehicle.name} ({vehicle.licensePlate})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Select Date */}
+      <div className="mb-4">
+        <label className="block mb-2">Date</label>
+        <input
+          type="date"
+          className="w-full p-2 border"
+          onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+        />
+      </div>
+
+      {/* Select Time */}
+      <div className="mb-4">
+        <label className="block mb-2">Time</label>
+        <input
+          type="time"
+          className="w-full p-2 border"
+          onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+        />
+      </div>
+
+      {/* Submit Button */}
+      <button
+        type="submit"
+        className="bg-green-500 text-white p-2 w-full hover:bg-green-600"
+      >
+        Create Schedule
+      </button>
+    </form>
   );
 };
 
-export default SchedulePage;
+export default ScheduleForm;

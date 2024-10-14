@@ -1,4 +1,3 @@
-// models/Collector.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
@@ -52,4 +51,7 @@ CollectorSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-module.exports = mongoose.model("Collector", CollectorSchema);
+
+const Collector = mongoose.models.Collector || mongoose.model('Collector', new mongoose.Schema);
+module.exports = Collector;
+// module.exports = mongoose.model("Collector", CollectorSchema);

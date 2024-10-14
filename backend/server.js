@@ -4,8 +4,12 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const authRoutes = require("./routes/authRoutes");
 const centerRoutes = require("./routes/centerRoutes");
+const residentRoutes = require("./routes/residentRoutes");
+const collectorRoutes = require("./routes/collectorRoutes");
+const requestRoutes = require("./routes/wasteRequestRoutes");
+const issueRoutes = require("./routes/issueRoutes");
+
 const scheduleRoutes = require("./routes/scheduleRoutes");
-const collectorRoutes = require("./routes/collectorRoutes"); // Collector routes
 const vehicleRoutes = require("./routes/vehicleRoutes");
 const db = require("./db");
 
@@ -27,14 +31,16 @@ db.connect()
     process.exit(1); // Exit process if the connection fails
   });
 
-
-
-
 // Routes
+app.use("/api/auth", residentRoutes); // Resident Routes
+app.use("/api/collector", collectorRoutes); // Collector Routes
+app.use("/api/issues", issueRoutes); // Issue Routes
+app.use("/api/requests", requestRoutes); // Waste Request Routes
+
 app.use("/api/auth", authRoutes); // Authentication routes
 app.use("/api/centers", centerRoutes); // Center routes
+
 app.use("/api/schedule", scheduleRoutes); // Scheduling routes
-app.use("/api/collector", collectorRoutes); // Collector routes
 app.use("/api/vehicles", vehicleRoutes);
 
 // 404 error handling for unknown routes

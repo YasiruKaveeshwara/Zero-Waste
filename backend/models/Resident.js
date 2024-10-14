@@ -1,45 +1,42 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const ResidentSchema = new mongoose.Schema(
-  {
-    residentName: {
-      type: String,
-      required: true
-    },
-    address: {
-      type: String,
-      required: true
-    },
-    city: {
-      type: String,
-      required: true
-    },
-    phone: {
-      type: String,
-      required: true
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true
-    },
-    password: {
-      type: String,
-      required: true
-    },
-    usertype: {
-      type: String,
-      enum: ["resident", "collector", "admin"],
-      default: "resident"
-    }
+const ResidentSchema = new mongoose.Schema({
+  residentName: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  usertype: {
+    type: String,
+    enum: ['resident', 'collector', 'admin'],
+    default: 'resident',
+  },
+}, { timestamps: true });
 
 // Hash password before saving to database
-ResidentSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+ResidentSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     return next();
   }
   try {
@@ -56,6 +53,4 @@ ResidentSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-console.log("Connected to MongoDB database:", mongoose.connection.name);
-
-module.exports = mongoose.model("Resident", ResidentSchema, "residents");
+module.exports = mongoose.model('Resident', ResidentSchema);
