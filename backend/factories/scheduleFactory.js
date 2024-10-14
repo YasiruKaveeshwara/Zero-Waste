@@ -1,37 +1,40 @@
-const ScheduleRepository = require("../repositories/ScheduleRepository");
+const Schedule = require("../models/Schedule");
 
 class ScheduleFactory {
   static createNormalSchedule({ collector, center, vehicle, date, time }) {
-    return ScheduleRepository.create({
+    const schedule = new Schedule({
       collector,
       center,
       vehicle,
       date,
       time,
-      status: "scheduled", // Default to scheduled
+      status: "scheduled", // Default status
     });
+    return schedule.save(); // Ensure to save and return the promise
   }
 
   static createUrgentSchedule({ collector, center, vehicle, date, time }) {
-    return ScheduleRepository.create({
+    const schedule = new Schedule({
       collector,
       center,
       vehicle,
       date,
       time,
-      status: "urgent", // Urgent status for quick assignments
+      status: "urgent", // Urgent status
     });
+    return schedule.save(); // Ensure to save and return the promise
   }
 
   static createHolidaySchedule({ collector, center, vehicle, date, time }) {
-    return ScheduleRepository.create({
+    const schedule = new Schedule({
       collector,
       center,
       vehicle,
       date,
       time,
-      status: "holiday", // Schedules made for holiday collection
+      status: "holiday", // Holiday status
     });
+    return schedule.save(); // Ensure to save and return the promise
   }
 }
 
