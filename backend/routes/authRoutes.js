@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/authController");
 const wasteController = require("../controllers/wasteController");
 const residentController = require("../controllers/residentController");
+const CollectionCenter = require("../controllers/collectionCenterController");
 const { protect } = require("../middleware/authMiddleware");
 
 // Authentication routes
@@ -20,6 +21,12 @@ router.get("/waste/progress", protect, wasteController.getWasteProgress);
 router.get("/resident/profile", protect, residentController.getProfile);
 router.put("/resident/profile", protect, residentController.updateProfile);
 
+// Route to get all collection centers
+router.get(
+  "/collection-centers",
+  protect,
+  CollectionCenter.getAllCollectionCenters
+); // Route using controller method
 // Login route for admin
 router.post("/admin/login", authController.loginAdmin);
 

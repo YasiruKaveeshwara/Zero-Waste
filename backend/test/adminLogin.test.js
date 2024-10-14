@@ -28,14 +28,6 @@ beforeAll(async () => {
   });
 });
 
-afterAll(async () => {
-  // Clean up and close the database connection
-  if (mongoose.connection.readyState === 1) {
-    await mongoose.connection.db.dropDatabase(); // Drop test data
-    await mongoose.connection.close();
-  }
-});
-
 describe("Admin API Tests", () => {
   it("should login the admin successfully", async () => {
     const res = await request(app).post("/api/auth/admin/login").send({
