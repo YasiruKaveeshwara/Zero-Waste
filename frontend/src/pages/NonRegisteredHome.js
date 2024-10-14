@@ -119,20 +119,36 @@ const NonRegisteredHome = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Basic Household Waste Collection</td>
+                            <td>Glass Waste Collection</td>
                             <td>$15/month</td>
                         </tr>
                         <tr>
-                            <td>Recyclable Materials Collection</td>
+                            <td>Wood Materials Collection</td>
                             <td>$10/month</td>
                         </tr>
                         <tr>
                             <td>Hazardous Waste Collection</td>
-                            <td>$20/month</td>
+                            <td>$60/month</td>
                         </tr>
                         <tr>
-                            <td>On-Demand Bulk Waste Pickup</td>
+                            <td>Paper Waste Pickup</td>
+                            <td>$10/request</td>
+                        </tr>
+                        <tr>
+                            <td>Metal Waste Pickup</td>
+                            <td>$20/request</td>
+                        </tr>
+                        <tr>
+                            <td>Plastic Waste Pickup</td>
                             <td>$30/request</td>
+                        </tr>
+                        <tr>
+                            <td>Organic Waste Pickup</td>
+                            <td>$30/request</td>
+                        </tr>
+                        <tr>
+                            <td>Electronics Waste Pickup</td>
+                            <td>$50/request</td>
                         </tr>
                     </tbody>
                 </table>

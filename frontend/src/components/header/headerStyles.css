@@ -7,7 +7,6 @@
   color: white;
 }
 
-/* Menu icon styles */
 .menu-icon {
   width: 30px;
   height: 30px;
@@ -15,13 +14,11 @@
   margin-right: 15px;
 }
 
-/* Aligning the logo and navbar links */
 .logo-and-nav {
   display: flex;
   align-items: center;
 }
 
-/* Navigation links */
 .navbar {
   display: flex;
   gap: 20px;
@@ -38,7 +35,6 @@
   color: #77c23e;
 }
 
-/* Icons on the right side */
 .icons {
   display: flex;
   align-items: center;

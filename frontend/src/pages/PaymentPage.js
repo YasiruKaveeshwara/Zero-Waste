@@ -1,22 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SidebarIcon from '../components/sidebar/SidebarIcon';
 import Header from '../components/header/Header';
 import Footer from '../components/Footer.js';
+import { FaCreditCard, FaCalendarAlt, FaLock } from 'react-icons/fa'; // Import the icons
 import './PaymentPage.css';
 
+// Pricing structure based on waste type
+const wastePrices = {
+  Glass: 15,
+  Wood: 10,
+  Hazardous: 60,
+  Paper: 10,
+  Metal: 20,
+  Plastic: 30,
+  Organic: 30,
+  Electronics: 50,
+};
+
 function PaymentPage() {
+  const [requests, setRequests] = useState([]);
+  const [selectedRequest, setSelectedRequest] = useState(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState({
-    wasteType: 'Plastic',
-    quantity: 50, // Example data, ideally should be fetched
-    amount: 25, // Example amount
     cardHolderName: '',
     cardNumber: '',
     expiryDate: '',
     cvc: '',
   });
   const [errors, setErrors] = useState({});
+
+  // Fetch pending waste requests from the backend
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get('http://localhost:3050/api/auth/waste/history', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const pendingRequests = response.data.filter(request => request.status === 'pending');
+        setRequests(pendingRequests);
+      } catch (error) {
+        console.error('Error fetching waste requests:', error);
+      }
+    };
+
+    fetchRequests();
+  }, []);
+
+  // Calculate total amount based on waste type and quantity
+  const calculateAmount = (wasteType, quantity) => {
+    const pricePerUnit = wastePrices[wasteType] || 0;
+    return pricePerUnit * quantity;
+  };
+
+  // Handle selection of a waste request for payment
+  const handleRequestSelect = (request) => {
+    const amount = calculateAmount(request.wasteType, request.quantity);
+    setSelectedRequest({ ...request, amount });
+    setShowPaymentForm(true);
+  };
 
   const handleInputChange = (e) => {
     setPaymentDetails({
@@ -49,15 +93,18 @@ function PaymentPage() {
       setErrors(validationErrors);
       return;
     }
+  
     try {
       const response = await axios.post('http://localhost:3050/api/payment/process', {
-        residentId: '603d9b2e1c2b9c1a24f12b34', // Replace with actual resident ID
+        residentId: localStorage.getItem('residentId'), // Replace with actual resident ID
+        amount: selectedRequest.amount,
+        wasteRequestIds: [selectedRequest._id],
         ...paymentDetails,
       });
       alert(response.data.message);
     } catch (error) {
-      console.error('Payment error:', error);
-      alert('Failed to process payment.');
+      console.error('Payment error:', error.response?.data || error.message); // Log the error details
+      alert('Failed to process payment. ' + (error.response?.data.message || 'Please try again.'));
     }
   };
 
@@ -67,60 +114,82 @@ function PaymentPage() {
       <div className="main-content-payment">
         <Header />
         <div className="payment-content">
-          <h2>Waste Collection Payment</h2>
+          <h2>Pending Waste Collection Requests</h2>
           <table className="payment-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type of Waste</th>
+                <th>Quantity (kg)</th>
+                <th>Amount ($)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
             <tbody>
-              <tr>
-                <td>Waste Type:</td>
-                <td>{paymentDetails.wasteType}</td>
-              </tr>
-              <tr>
-                <td>Quantity (kg):</td>
-                <td>{paymentDetails.quantity}</td>
-              </tr>
-              <tr>
-                <td>Amount to Pay ($):</td>
-                <td>{paymentDetails.amount}</td>
-              </tr>
+              {requests.length > 0 ? (
+                requests.map(request => (
+                  <tr key={request._id}>
+                    <td>{new Date(request.collectionDate).toLocaleDateString()}</td>
+                    <td>{request.wasteType}</td>
+                    <td>{request.quantity}</td>
+                    <td>{calculateAmount(request.wasteType, request.quantity)}</td>
+                    <td>
+                      <button
+                        className="pay-button"
+                        onClick={() => handleRequestSelect(request)}
+                      >
+                        Pay ${calculateAmount(request.wasteType, request.quantity)}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5">No pending requests</td>
+                </tr>
+              )}
             </tbody>
           </table>
-          <button
-            className="pay-button"
-            onClick={() => setShowPaymentForm(true)}
-          >
-            Pay ${paymentDetails.amount}
-          </button>
 
-          {showPaymentForm && (
+          {showPaymentForm && selectedRequest && (
             <form className="payment-form" onSubmit={handlePaymentSubmit}>
-              <h3>Enter Payment Details</h3>
-              <div className="form-group">
-                <label>Cardholder Name</label>
-                <input
-                  type="text"
-                  name="cardHolderName"
-                  value={paymentDetails.cardHolderName}
-                  onChange={handleInputChange}
-                  required
-                />
-                {errors.cardHolderName && <p className="error">{errors.cardHolderName}</p>}
-              </div>
-              <div className="form-group">
-                <label>Card Number</label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  value={paymentDetails.cardNumber}
-                  onChange={handleInputChange}
-                  maxLength="12"
-                  required
-                />
-                {errors.cardNumber && <p className="error">{errors.cardNumber}</p>}
-              </div>
-              <div className="form-group">
+            <h3 className="form-header">Enter Payment Details</h3>
+            <div className="form-group">
+              <label>Cardholder Name</label>
+              <input
+                type="text"
+                name="cardHolderName"
+                value={paymentDetails.cardHolderName}
+                onChange={handleInputChange}
+                required
+              />
+              {errors.cardHolderName && <p className="error">{errors.cardHolderName}</p>}
+            </div>
+            <div className="form-group card-input-container">
+              <label>Card Number</label>
+              <span className="card-input-icon">
+                <FaCreditCard />
+              </span>
+              <input
+                type="text"
+                className="card-input"
+                name="cardNumber"
+                value={paymentDetails.cardNumber}
+                onChange={handleInputChange}
+                maxLength="12"
+                required
+              />
+              {errors.cardNumber && <p className="error">{errors.cardNumber}</p>}
+            </div>
+            <div className="expiry-cvc-container">
+              <div className="form-group card-input-container">
                 <label>Expiry Date</label>
+                <span className="card-input-icon">
+                  <FaCalendarAlt />
+                </span>
                 <input
                   type="text"
+                  className="card-input"
                   name="expiryDate"
                   value={paymentDetails.expiryDate}
                   onChange={handleInputChange}
@@ -129,10 +198,14 @@ function PaymentPage() {
                 />
                 {errors.expiryDate && <p className="error">{errors.expiryDate}</p>}
               </div>
-              <div className="form-group">
+              <div className="form-group card-input-container">
                 <label>CVC</label>
+                <span className="card-input-icon">
+                  <FaLock />
+                </span>
                 <input
                   type="text"
+                  className="card-input"
                   name="cvc"
                   value={paymentDetails.cvc}
                   onChange={handleInputChange}
@@ -141,10 +214,11 @@ function PaymentPage() {
                 />
                 {errors.cvc && <p className="error">{errors.cvc}</p>}
               </div>
-              <button type="submit" className="submit-payment">
-                Submit Payment
-              </button>
-            </form>
+            </div>
+            <button type="submit" className="submit-payment">
+              Submit Payment
+            </button>
+          </form>
           )}
         </div>
         <Footer />

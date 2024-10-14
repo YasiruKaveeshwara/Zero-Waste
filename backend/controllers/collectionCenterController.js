@@ -1,5 +1,3 @@
-// controllers/collectionCenterController.js
-
 const CollectionCenter = require('../models/Center');
 
 // Controller to get all collection centers

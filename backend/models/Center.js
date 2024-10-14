@@ -8,10 +8,10 @@ const collectionCenterSchema = new mongoose.Schema(
     operatingHours: { type: String, required: true },
     resources: {
       trucks: { type: Number, default: 0 },
-      staff: { type: Number, default: 0 }
+      staff: { type: Number, default: 0 },
     },
     peakHours: { type: [String], default: [] }, // Array for peak hours
-    status: { type: String, default: "active" } // Status field
+    status: { type: String, default: "active" }, // Status field
   },
   { timestamps: true }
 );
