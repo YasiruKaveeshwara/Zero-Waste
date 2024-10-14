@@ -1,5 +1,5 @@
 // factories/CollectorFactory.js
-const Collector = require("../models/collector");
+const Collector = require("../models/Collector");
 
 class CollectorFactory {
   static createCollector(collectorData) {

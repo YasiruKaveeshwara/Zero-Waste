@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Collector = require("../models/collector");
+const Collector = require("../models/Collector");
 
 exports.protectCollector = async (req, res, next) => {
   let token;

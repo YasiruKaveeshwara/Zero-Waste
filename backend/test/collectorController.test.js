@@ -1,4 +1,3 @@
-// tests/collectorController.test.js
 const request = require("supertest");
 const app = require("../server"); // Ensure you import your server
 

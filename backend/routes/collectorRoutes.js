@@ -1,8 +1,7 @@
-// routes/collectorRoutes.js
 const express = require("express");
 const router = express.Router();
 const collectorController = require("../controllers/collectorController");
-const { protectCollector } = require("../middleware/authCollectorMiddleware");
+const { protectCollector } = require("../middleware/collectorMiddleware");
 
 // Collector authentication routes
 router.post("/signup", collectorController.signupCollector);
@@ -26,15 +25,5 @@ router.put(
       res.status(500).json({ message: "updateProfile function not implemented." });
     }
 );
-
-// / Fetch collection requests based on filter (today, yesterday, week, month)
-router.get("/requests", protectCollector, collectorController.getRequestsByFilter);
-
-// Mark request as collected or pending
-router.put("/requests/:id/collected", protectCollector, collectorController.markAsCollected);
-router.put("/requests/:id/pending", protectCollector, collectorController.markAsPending);
-
-// Report issue with request (optional)
-router.post("/requests/:id/report", protectCollector, collectorController.reportIssue);
 
 module.exports = router;

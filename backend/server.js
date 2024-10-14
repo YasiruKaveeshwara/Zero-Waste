@@ -2,9 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const authRoutes = require("./routes/authRoutes"); // Resident routes
-const collectorRoutes = require("./routes/collectorRoutes"); // Collector routes
 const db = require("./db");
+
+const residentRoutes = require("./routes/residentRoutes");
+const collectorRoutes = require("./routes/collectorRoutes");
+const requestRoutes = require("./routes/wasteRequestRoutes");
+const issueRoutes = require("./routes/issueRoutes");
 
 dotenv.config();
 
@@ -20,11 +23,10 @@ app.use(bodyParser.json());
   if (dbConnected) {
     console.log("Database connection successful");
 
-    // Resident Routes
-    app.use("/api/auth", authRoutes);
-
-    // Collector Routes
-    app.use("/api/collector", collectorRoutes);
+    app.use("/api/auth", residentRoutes); // Resident Routes
+    app.use("/api/collector", collectorRoutes); // Collector Routes
+    app.use("/api/issues", issueRoutes); // Issue Routes
+    app.use("/api/requests", requestRoutes); // Waste Request Routes
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);

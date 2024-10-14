@@ -1,8 +1,7 @@
 // controllers/collectorController.js
 const CollectorFactory = require("../factories/collectorFactory");
-const Collector = require("../models/collector");
+const Collector = require("../models/Collector");
 const jwt = require("jsonwebtoken");
-const WasteRequest = require("../models/WasteRequest");
 
 // Signup collector (using the factory pattern)
 exports.signupCollector = async (req, res) => {
@@ -102,103 +101,5 @@ exports.updateProfile = async (req, res) => {
     res.status(200).json({ message: "Profile updated successfully.", collector });
   } catch (error) {
     res.status(500).json({ message: "Error updating profile.", error });
-  }
-};
-
-// Get collection requests based on filter (today, yesterday, week, month)
-// In collectorController.js (backend)
-exports.getRequestsByFilter = async (req, res) => {
-  const { filter } = req.query;
-  const now = new Date();
-  let startDate;
-
-  switch (filter) {
-    case "today":
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      break;
-    case "yesterday":
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-      break;
-    case "week":
-      startDate = new Date(now.setDate(now.getDate() - now.getDay()));
-      break;
-    case "month":
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      break;
-    default:
-      return res.status(400).json({ message: "Invalid filter" });
-  }
-
-  try {
-    // Fetch both pending and collected requests
-    const requests = await WasteRequest.find({
-      collectionDate: { $gte: startDate },
-    })
-      .populate("resident", "residentName address") // Populates resident's name and address
-      .sort({ status: 1, collectionDate: -1 }); // Sort by status (pending first, then collected)
-
-    res.status(200).json(requests);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching requests", error });
-  }
-};
-
-// Mark the request as collected
-exports.markAsCollected = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const request = await WasteRequest.findById(id);
-    if (!request) {
-      return res.status(404).json({ message: "Request not found" });
-    }
-
-    // Update the status to 'collected'
-    request.status = "collected";
-    await request.save();
-
-    res.status(200).json({ message: "Request marked as collected" });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating request status", error });
-  }
-};
-
-// Mark the request as pending (if unchecked)
-exports.markAsPending = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const request = await WasteRequest.findById(id);
-    if (!request) {
-      return res.status(404).json({ message: "Request not found" });
-    }
-
-    // Update the status to 'pending'
-    request.status = "pending";
-    await request.save();
-
-    res.status(200).json({ message: "Request marked as pending" });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating request status", error });
-  }
-};
-
-// Report an issue with a collection request (Optional)
-exports.reportIssue = async (req, res) => {
-  const { id } = req.params;
-  const { issueDescription } = req.body;
-
-  try {
-    const request = await WasteRequest.findById(id);
-    if (!request) {
-      return res.status(404).json({ message: "Request not found" });
-    }
-
-    // You can log the issue or handle it accordingly (save to DB, send notification, etc.)
-    console.log(`Issue reported for request ${id}: ${issueDescription}`);
-
-    res.status(200).json({ message: "Issue reported successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error reporting issue", error });
   }
 };

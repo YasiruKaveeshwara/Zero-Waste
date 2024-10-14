@@ -1,6 +1,5 @@
-// db.js
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
 dotenv.config(); // Load environment variables
 
@@ -18,7 +17,7 @@ class Database {
       const uri = process.env.MONGODB_URL;
 
       if (!uri) {
-        console.error('MONGODB_URL is not defined in the environment variables.');
+        console.error("MONGODB_URL is not defined in the environment variables.");
         process.exit(1);
       }
 
@@ -26,23 +25,21 @@ class Database {
 
       try {
         await mongoose.connect(uri);
-        console.log('MongoDB connected');
+        console.log("MongoDB connected");
         this.connection = mongoose.connection;
-        return true;  // Connection successful
+        return true; // Connection successful
       } catch (err) {
-        console.error('Connection error:', err);
-        return false;  // Connection failed
+        console.error("Connection error:", err);
+        return false; // Connection failed
       }
     }
 
     return this.connection;
   }
-  
 }
 
 // Export a singleton instance of the Database class
 module.exports = new Database();
-
 
 // Singleton Pattern:
 
