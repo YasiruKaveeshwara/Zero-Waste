@@ -11,6 +11,8 @@ router.get("/collector/:collectorId", scheduleController.getCollectorSchedules);
 
 // Get all schedules
 router.get("/getAll", scheduleController.getAllSchedules); // Route for getting all schedules
-router.get("/getAll", scheduleController.getAllSchedules);
+
+// Route to get schedules by collection center
+router.get("/getByCenter/:centerId", scheduleController.getSchedulesByCenter);
 
 module.exports = router;

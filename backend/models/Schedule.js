@@ -30,8 +30,15 @@ const ScheduleSchema = new mongoose.Schema(
       enum: ["scheduled", "completed", "canceled"],
       default: "scheduled",
     },
+    requests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WasteRequest",
+      },
+    ],
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Schedule", ScheduleSchema);

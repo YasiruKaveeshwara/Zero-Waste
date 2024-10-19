@@ -53,7 +53,7 @@ const AdminSidebar = () => {
           </li>
           <li className="mb-2">
             <Link
-              to="/collector-schedules"
+              to="/schedulePage"
               className="flex items-center hover:underline"
             >
               <FaClipboardList className="mr-2" />

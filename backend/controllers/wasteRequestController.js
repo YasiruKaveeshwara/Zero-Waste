@@ -1,4 +1,5 @@
 const WasteRequest = require("../models/WasteRequest");
+const Resident = require("../models/Resident");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
@@ -7,7 +8,9 @@ exports.createWasteRequest = async (req, res) => {
   try {
     // Check if the database connection is ready
     if (mongoose.connection.readyState !== 1) {
-      return res.status(500).json({ message: "Database connection is not established." });
+      return res
+        .status(500)
+        .json({ message: "Database connection is not established." });
     }
 
     const { wasteType, quantity, collectionDate, collectionTime } = req.body;
@@ -39,10 +42,14 @@ exports.getUserWasteRequests = async (req, res) => {
   try {
     // Check if the database connection is ready
     if (mongoose.connection.readyState !== 1) {
-      return res.status(500).json({ message: "Database connection is not established." });
+      return res
+        .status(500)
+        .json({ message: "Database connection is not established." });
     }
 
-    const requests = await WasteRequest.find({ resident: req.user.id }).sort({ createdAt: -1 });
+    const requests = await WasteRequest.find({ resident: req.user.id }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(requests);
   } catch (error) {
     console.error("Error fetching waste requests:", error);
@@ -55,14 +62,18 @@ exports.getWasteProgress = async (req, res) => {
   try {
     // Check if the database connection is ready
     if (mongoose.connection.readyState !== 1) {
-      return res.status(500).json({ message: "Database connection is not established." });
+      return res
+        .status(500)
+        .json({ message: "Database connection is not established." });
     }
 
     const wasteRequests = await WasteRequest.find();
     res.status(200).json(wasteRequests);
   } catch (error) {
     console.error("Error fetching waste progress data:", error);
-    res.status(500).json({ message: "Error fetching waste progress data.", error });
+    res
+      .status(500)
+      .json({ message: "Error fetching waste progress data.", error });
   }
 };
 
@@ -171,5 +182,39 @@ exports.markAsPending = async (req, res) => {
     res.status(200).json({ message: "Request marked as pending" });
   } catch (error) {
     res.status(500).json({ message: "Error updating request status", error });
+  }
+};
+
+// Get all pending requests by collection center (centerId as ObjectId)
+exports.getRequestsByCenter = async (req, res) => {
+  const { centerId } = req.params; // Extract centerId from request params
+
+  try {
+    // Check if the centerId is provided in the request
+    if (!centerId) {
+      return res.status(400).json({ message: "Center ID is required." });
+    }
+
+    // Convert centerId to ObjectId to match MongoDB ObjectId format (use 'new')
+    const centerObjectId = new mongoose.Types.ObjectId(centerId);
+
+    // Fetch all pending requests for the provided collection center
+    const pendingRequests = await WasteRequest.find({
+      collectionCenter: centerObjectId, // Match the center using ObjectId
+      status: "pending", // Only retrieve requests with 'pending' status
+    }).populate("resident"); // Populate resident details for each request
+
+    console.log(pendingRequests);
+
+    // If no pending requests found, return an appropriate message
+    if (pendingRequests.length === 0) {
+      return res.status(404).json({ message: "No pending requests found." });
+    }
+
+    // Return the fetched pending requests
+    res.status(200).json(pendingRequests);
+  } catch (error) {
+    console.error("Error fetching pending requests:", error);
+    res.status(500).json({ message: "Error fetching pending requests." });
   }
 };

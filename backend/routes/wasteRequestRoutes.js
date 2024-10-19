@@ -7,4 +7,11 @@ router.get("/requests", wasteRequestController.getRequestsByFilter);
 router.put("/requests/:id/collected", wasteRequestController.markAsCollected);
 router.put("/requests/:id/pending", wasteRequestController.markAsPending);
 
+router.get("/filter", wasteRequestController.getRequestsByFilter);
+router.put("/:id/collected", wasteRequestController.markAsCollected);
+router.put("/:id/pending", wasteRequestController.markAsPending);
+
+// Route to get all pending requests for a specific center using centerId as a parameter
+router.get("/byCenter/:centerId", wasteRequestController.getRequestsByCenter);
+
 module.exports = router; // Make sure to export the router

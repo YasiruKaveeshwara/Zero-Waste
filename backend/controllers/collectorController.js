@@ -1,44 +1,46 @@
-// controllers/collectorController.js
 const CollectorFactory = require("../factories/collectorFactory");
-const Collector = require("../models/collector");
 const jwt = require("jsonwebtoken");
+const CollectorRepository = require("../repositories/collectorRepository");
+const { ExperiencedCollectorStrategy, NewCollectorStrategy } = require("../strategies/collectorProfileStrategy");
 
-// Signup collector (using the factory pattern)
+// Signup collector
 exports.signupCollector = async (req, res) => {
   try {
-    const { name, phone, email, password, city } = req.body;
+    const { name, phone, email, password, city, center } = req.body;
 
-    // Check if the email is already in use
-    const existingCollector = await Collector.findOne({ email });
+    // Check if the email already exists
+    const existingCollector = await CollectorRepository.findByEmail(email);
     if (existingCollector) {
       return res.status(400).json({ message: "Email already in use." });
     }
 
-    // Create a new collector using the factory
-    const newCollector = CollectorFactory.createCollector({
+    // Create the collector data (this is not saved yet)
+    const newCollectorData = CollectorFactory.createCollector({
       name,
       phone,
       email,
       password,
-      usertype: "collector",
       city,
+      center,
     });
 
-    await newCollector.save();
-    res.status(201).json({ message: "Collector registered successfully." });
+    // Save the new collector using repository
+    const savedCollector = await CollectorRepository.create(newCollectorData);
+
+    res.status(201).json({ message: "Collector registered successfully.", collector: savedCollector });
   } catch (error) {
     console.error("Error registering collector:", error);
     res.status(500).json({ message: "Error registering collector.", error });
   }
 };
 
-// signin collector
+// Signin collector
 exports.signInCollector = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     // Find the collector by email
-    const collector = await Collector.findOne({ email });
+    const collector = await CollectorRepository.findByEmail(email);
     if (!collector) {
       return res.status(400).json({ message: "Invalid email or password." });
     }
@@ -59,6 +61,7 @@ exports.signInCollector = async (req, res) => {
       phone: collector.phone,
       usertype: collector.usertype,
       city: collector.city,
+      center: collector.center,
     });
   } catch (error) {
     console.error("Error logging in collector:", error);
@@ -69,7 +72,7 @@ exports.signInCollector = async (req, res) => {
 // Get collector profile (Read operation)
 exports.getProfile = async (req, res) => {
   try {
-    const collector = await Collector.findById(req.user.id).select("-password");
+    const collector = await CollectorRepository.findById(req.user.id);
     if (!collector) {
       return res.status(404).json({ message: "Collector not found." });
     }
@@ -84,7 +87,7 @@ exports.updateProfile = async (req, res) => {
   const { name, email, phone, address } = req.body;
 
   try {
-    const collector = await Collector.findById(req.user.id);
+    const collector = await CollectorRepository.findById(req.user.id);
 
     if (!collector) {
       return res.status(404).json({ message: "Collector not found." });
@@ -96,9 +99,9 @@ exports.updateProfile = async (req, res) => {
     if (phone) collector.phone = phone;
     if (address) collector.address = address;
 
-    await collector.save();
+    const updatedCollector = await collector.save();
 
-    res.status(200).json({ message: "Profile updated successfully.", collector });
+    res.status(200).json({ message: "Profile updated successfully.", collector: updatedCollector });
   } catch (error) {
     res.status(500).json({ message: "Error updating profile.", error });
   }
@@ -107,10 +110,43 @@ exports.updateProfile = async (req, res) => {
 // Get all collectors (workers)
 exports.getAllCollectors = async (req, res) => {
   try {
-    const collectors = await Collector.find(); // Fetch all collectors from the database
+    const collectors = await CollectorRepository.findAll(); // Fetch all collectors from the database
     res.status(200).json(collectors);
   } catch (error) {
     console.error("Error fetching collectors:", error);
     res.status(500).json({ message: "Error fetching collectors.", error });
   }
 };
+
+// Get collector info using strategy
+exports.getCollectorInfo = async (req, res) => {
+  try {
+    const collector = await CollectorRepository.findById(req.user.id);
+
+    if (!collector) {
+      return res.status(404).json({ message: "Collector not found." });
+    }
+
+    let strategy;
+    if (collector.isExperienced) {
+      strategy = new ExperiencedCollectorStrategy();
+    } else {
+      strategy = new NewCollectorStrategy();
+    }
+
+    const profileMessage = strategy.apply(collector);
+    res.status(200).json({ message: profileMessage });
+  } catch (error) {
+    console.error("Error fetching collector info:", error);
+    res.status(500).json({ message: "Error fetching collector info.", error });
+  }
+};
+
+// Controller Pattern
+// How it Works:
+// Controllers act as intermediaries between the client and the data layer. They handle incoming HTTP requests, process them, and return the appropriate responses. The controller coordinates the flow of data between the view (frontend) and the model (backend).
+// Each function in the controller performs a specific task (e.g., signing up a collector, logging in, updating profiles) by interacting with the appropriate services or repositories.
+// Why It’s Important:
+// Separation of Concerns: The controller pattern separates concerns by ensuring that each part of the code has a single responsibility. Controllers focus on handling HTTP requests and responses, while repositories or services handle the business logic and data access.
+// Reusability: By keeping the controller logic clean and concise, you can easily reuse the same logic in different parts of your application, especially when implementing RESTful APIs.
+// Maintainability: The controller pattern makes the code more maintainable. If you need to change the way the app processes a specific request, you only need to update the corresponding controller function, not the whole system.

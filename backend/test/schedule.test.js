@@ -13,7 +13,6 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
 });
 
@@ -43,13 +42,13 @@ describe("Schedule API Tests", () => {
     });
   });
 
-  afterEach(async () => {
-    // Clean up after each test
-    await Schedule.deleteMany();
-    await Collector.deleteMany();
-    await Center.deleteMany();
-    await Vehicle.deleteMany();
-  });
+  // afterEach(async () => {
+  //   // Clean up after each test
+  //   await Schedule.deleteMany();
+  //   await Collector.deleteMany();
+  //   await Center.deleteMany();
+  //   await Vehicle.deleteMany();
+  // });
 
   it("should create a new schedule successfully", async () => {
     const res = await request(app).post("/api/schedule").send({

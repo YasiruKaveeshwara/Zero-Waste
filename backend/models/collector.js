@@ -28,8 +28,12 @@ const CollectorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    center: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Center",
+    },
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically adds 'createdAt' and 'updatedAt' fields
 );
 
 // Hash password before saving
@@ -51,7 +55,28 @@ CollectorSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
+// Virtual property to determine if the collector is experienced
+CollectorSchema.virtual("isExperienced").get(function () {
+  const createdYearsAgo = new Date().getFullYear() - this.createdAt.getFullYear();
+  return createdYearsAgo > 2; // Consider experienced if registered for more than 2 years
+});
 
-const Collector = mongoose.models.Collector || mongoose.model('Collector', new mongoose.Schema);
-module.exports = Collector;
-// module.exports = mongoose.model("Collector", CollectorSchema);
+// Enable virtuals to be included in JSON and Object outputs
+CollectorSchema.set("toJSON", { virtuals: true });
+CollectorSchema.set("toObject", { virtuals: true });
+
+// Check if the model already exists before creating it
+module.exports = mongoose.models.Collector || mongoose.model("Collector", CollectorSchema);
+
+// Applied Pattern: Active Record Pattern
+// How it Works:
+
+// In your collectorModel.js, you are using the Active Record Pattern via Mongoose, which combines both data and behavior in a single class (schema). The model not only defines the data structure (fields like name, email, password, etc.) but also includes behavior like hashing passwords before saving and comparing passwords during login.
+
+// Mongoose allows you to define schema methods like comparePassword and lifecycle hooks (like pre('save')) to execute logic when interacting with the model.
+
+// Why It's Important:
+
+// Data and Behavior Together: Active Record combines the model’s data and behavior into one structure. This makes it easier to interact with the database directly from the model, keeping logic like password comparison inside the model itself.
+// Consistency: Since models are reused across the app, all database interactions (e.g., user creation, password hashing) follow a consistent and standardized approach.
+// Maintainability: When the schema needs to change, it's easy to update because everything related to that model (structure and methods) is in one place.

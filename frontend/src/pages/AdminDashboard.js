@@ -20,7 +20,7 @@ const AdminDashboard = () => {
           <h2 className="text-xl font-bold">View Collector Schedules</h2>
           <p>View schedules for all garbage collectors.</p>
           <a
-            href="/collector-schedules"
+            href="/schedulePage"
             className="text-green-600 hover:underline mt-4 inline-block"
           >
             View Schedules

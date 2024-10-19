@@ -15,29 +15,46 @@ const SchedulePage = () => {
   ]);
   const [scheduledDates, setScheduledDates] = useState([]);
   const [scheduleInfo, setScheduleInfo] = useState(null);
+  const [centers, setCenters] = useState([]); // State to store available centers
+  const [selectedCenter, setSelectedCenter] = useState(""); // State for the selected center
+
+  // Fetch centers from the server
+  useEffect(() => {
+    const fetchCenters = async () => {
+      try {
+        const response = await axios.get("http://localhost:3050/api/centers");
+        setCenters(response.data);
+      } catch (error) {
+        console.error("Error fetching centers:", error);
+      }
+    };
+    fetchCenters();
+  }, []);
 
   // Fetch scheduled dates from the server
   useEffect(() => {
     const fetchScheduledDates = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3050/api/schedule/getAll"
-        );
-        const schedules = response.data;
+        if (selectedCenter) {
+          const response = await axios.get(
+            `http://localhost:3050/api/schedule/getByCenter/${selectedCenter}`
+          );
+          const schedules = response.data;
 
-        // Extract dates from schedules and format them
-        const formattedDates = schedules.map((schedule) => ({
-          date: new Date(schedule.date).toDateString(),
-          info: schedule,
-        }));
+          // Extract dates from schedules and format them
+          const formattedDates = schedules.map((schedule) => ({
+            date: new Date(schedule.date).toDateString(),
+            info: schedule,
+          }));
 
-        setScheduledDates(formattedDates);
+          setScheduledDates(formattedDates);
+        }
       } catch (error) {
         console.error("Error fetching scheduled dates:", error);
       }
     };
     fetchScheduledDates();
-  }, []);
+  }, [selectedCenter]); // Fetch schedules when the selected center changes
 
   const handleTimeSlotSelection = (slot) => {
     setSelectedTime(slot);
@@ -80,13 +97,29 @@ const SchedulePage = () => {
         </Link>
       </div>
 
+      {/* Select Center */}
+      <div className="mb-6">
+        <label className="block text-lg font-medium text-gray-700 mb-2">
+          Select Collection Center:
+        </label>
+        <select
+          value={selectedCenter}
+          onChange={(e) => setSelectedCenter(e.target.value)}
+          className="w-full p-3 border rounded-lg"
+        >
+          <option value="">Select a Center</option>
+          {centers.map((center) => (
+            <option key={center._id} value={center._id}>
+              {center.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Main Container */}
-      <div className="max-w-6xl mx-auto p-8 bg-gray-50 rounded-lg shadow-md">
+      <div className="max-w-6xl mx-auto p-8 bg-gray-50 rounded-lg shadow-md flex justify-between">
         {/* Calendar Section */}
         <div className="calendar-container mb-10">
-          <h2 className="text-2xl font-medium text-gray-800 mb-4">
-            Select a Date
-          </h2>
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <Calendar
               onChange={(date) => {
@@ -131,27 +164,6 @@ const SchedulePage = () => {
           </p>
         )}
 
-        {/* Time Slots Section */}
-        <div className="time-slots mb-10">
-          <h2 className="text-2xl font-medium text-gray-800 mb-4">
-            Select a Time Slot
-          </h2>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {availableTimeSlots.map((slot) => (
-              <button
-                key={slot}
-                className={`p-4 w-48 text-center font-semibold rounded-lg shadow-md transition-all transform hover:scale-105 ${
-                  selectedTime === slot
-                    ? "bg-green-500 text-white"
-                    : "bg-white border border-gray-300"
-                }`}
-                onClick={() => handleTimeSlotSelection(slot)}
-              >
-                {slot}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </AdminDashboardLayout>
   );

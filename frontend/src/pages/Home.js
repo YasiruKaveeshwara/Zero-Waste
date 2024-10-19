@@ -73,52 +73,52 @@ const TESTIMONIALS = [
     alt: "User",
     name: "John D., Eco Enthusiast",
     quote: "Their commitment to sustainability and the environment is truly impressive.",
-  }
+  },
 ];
 
 // Define the Home component
 function Home() {
   return (
-    <div className="home-container">
+    <div className='home-container'>
       <SidebarIcon />
-      <div className="main-content">
+      <div className='main-content'>
         <Header />
-        <div className="cards-section">
+        <div className='cards-section'>
           <CardView />
         </div>
-        
+
         {/* Services Section */}
-        <div className="services-section">
+        <div className='services-section'>
           <h2>Our Services</h2>
-          <div className="services-grid">
+          <div className='services-grid'>
             {SERVICES.map((service, index) => (
-              <div key={index} className="service-card">
-                <img src={service.img} alt={service.alt} className="service-icon" />
+              <div key={index} className='service-card'>
+                <img src={service.img} alt={service.alt} className='service-icon' />
                 <h3>{service.title}</h3>
                 <p>{service.description}</p>
               </div>
             ))}
           </div>
-          <div className="services-image-container">
-            <img src={ServicesImage} alt="Services Overview" className="services-image" />
+          <div className='services-image-container'>
+            <img src={ServicesImage} alt='Services Overview' className='services-image' />
           </div>
         </div>
-        
+
         {/* Call-to-Action Section */}
-        <div className="cta-section">
+        <div className='cta-section'>
           <h2>Ready to Make a Difference?</h2>
           <p>Join us today and contribute to a cleaner and greener environment. Get started now!</p>
-          <button className="cta-button">Get Started</button>
+          <button className='cta-button'>Get Started</button>
         </div>
-        
+
         {/* Testimonials Section */}
-        <div className="testimonials-section">
+        <div className='testimonials-section'>
           <h2>What Our Clients Say</h2>
-          <div className="testimonials-container">
+          <div className='testimonials-container'>
             {TESTIMONIALS.map((testimonial, index) => (
-              <div key={index} className="testimonial-card">
-                <div className="testimonial-content">"{testimonial.quote}"</div>
-                <div className="testimonial-author">
+              <div key={index} className='testimonial-card'>
+                <div className='testimonial-content'>"{testimonial.quote}"</div>
+                <div className='testimonial-author'>
                   <img src={testimonial.img} alt={testimonial.alt} />
                   <p>{testimonial.name}</p>
                 </div>
@@ -126,7 +126,7 @@ function Home() {
             ))}
           </div>
         </div>
-        
+
         <Footer />
       </div>
     </div>
