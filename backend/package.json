@@ -20,8 +20,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node server.js",  
-    "test": "jest",  
+    "start": "node server.js",
+    "test": "jest",
     "build": "echo 'No build step required for backend'",
     "eject": "echo 'No eject step required for backend'"
   },
@@ -46,6 +46,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.25.8",
     "babel-jest": "^29.7.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "supertest": "^7.0.0"
   }
 }
