@@ -1,6 +1,7 @@
 const WasteRequest = require("../models/WasteRequest");
 const CollectionCenter = require("../models/Center");
 const mongoose = require("mongoose");
+const { allocateResources } = require("./ResourceAllocationController");
 
 // Create a new waste request
 exports.createWasteRequest = async (req, res) => {
@@ -52,7 +53,18 @@ exports.createWasteRequest = async (req, res) => {
     });
 
     await newWasteRequest.save();
-    res.status(201).json({ message: "Waste request created successfully." });
+    // Update the total quantity in allocatedResources
+    validCenter.allocatedResources.totalQuantity += quantity;
+
+    // Save updated center data with the new total quantity
+    await validCenter.save();
+
+    // Call the resource allocation logic to update trucks and staff
+    await allocateResources();
+
+    res.status(201).json({
+      message: "Waste request created successfully, total quantity updated."
+    });
   } catch (error) {
     console.error("Error creating waste request:", error);
     res.status(500).json({ message: "Error creating waste request.", error });

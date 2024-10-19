@@ -13,9 +13,11 @@ import NonRegHome from "./pages/NonRegisteredHome";
 // Admin components
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboardLayout from "./pages/AdminDashboardLayout";
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminCollectionCentres from "./pages/AdminCollectionCentres";
 import AdminPeakMonitoring from "./pages/AdminPeakMonitoring";
 import AdminCentreDetails from "./pages/AdminCentreDetails";
+import AdminResourceAllocation from "./pages/AdminResourceAllocation";
 // Protected route
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -45,7 +47,7 @@ function App() {
               path="/admin-dashboard"
               element={
                 <ProtectedRoute>
-                  <AdminDashboardLayout />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
@@ -62,6 +64,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <AdminPeakMonitoring />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin-allocate-resources"
+              element={
+                <ProtectedRoute>
+                  <AdminResourceAllocation />
                 </ProtectedRoute>
               }
             />

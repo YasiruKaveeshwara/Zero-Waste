@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import AdminDashboardLayout from "../pages/AdminDashboardLayout";
 import AdminAddCentreForm from "../components/AdminAddCentreForm";
+import "./AdminCollectionCentres.css"; // Import custom CSS for styling
 
 const AdminCollectionCentres = () => {
   const [centres, setCentres] = useState([]);
@@ -76,7 +77,7 @@ const AdminCollectionCentres = () => {
             setIsFormVisible(true);
             setEditCenter(null); // Reset the edit state for adding new center
           }} // Show the form for adding a new center
-          className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+          className="add-button"
         >
           Add Collection Centre
         </button>
@@ -84,42 +85,39 @@ const AdminCollectionCentres = () => {
         {centres.length === 0 ? (
           <p className="mt-4">No collection centres available.</p>
         ) : (
-          <table className="min-w-full table-auto mt-4">
+          <table className="collection-centres-table min-w-full table-auto mt-4">
             <thead>
               <tr>
-                <th className="px-4 py-2">Name</th>
-                <th className="px-4 py-2">Location</th>
-                <th className="px-4 py-2">Capacity</th>
-                <th className="px-4 py-2">Operating Hours</th>
-                <th className="px-4 py-2">Trucks</th>
-                <th className="px-4 py-2">Staff</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Actions</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Capacity (tons)</th>
+                <th>Operating Hours</th>
+                <th>Trucks</th>
+                <th>Staff</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {centres.map((centre) => (
                 <tr key={centre._id} className="border-t">
-                  <td className="px-4 py-2">{centre.name}</td>
-                  <td className="px-4 py-2">{centre.location}</td>
-                  <td className="px-4 py-2">{centre.capacity}</td>
-                  <td className="px-4 py-2">{centre.operatingHours}</td>
-                  <td className="px-4 py-2">{centre.resources.trucks}</td>
-                  <td className="px-4 py-2">{centre.resources.staff}</td>
-                  <td className="px-4 py-2">
-                    {renderStatus(centre.status)}
-                  </td>{" "}
-                  {/* Updated */}
-                  <td className="px-4 py-2">
+                  <td>{centre.name}</td>
+                  <td>{centre.location}</td>
+                  <td>{centre.capacity}</td>
+                  <td>{centre.operatingHours}</td>
+                  <td>{centre.resources.trucks}</td>
+                  <td>{centre.resources.staff}</td>
+                  <td>{renderStatus(centre.status)}</td>
+                  <td>
                     <button
                       onClick={() => handleEdit(centre)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
+                      className="edit-button"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(centre._id)}
-                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      className="delete-button"
                     >
                       Delete
                     </button>
@@ -132,12 +130,12 @@ const AdminCollectionCentres = () => {
 
         {/* Inline Form for Adding/Editing Collection Center */}
         {isFormVisible && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+          <div className="form-modal">
+            <div className="form-container">
               <div className="flex justify-end">
                 <button
                   onClick={() => setIsFormVisible(false)} // Hide form on close
-                  className="text-gray-500 hover:text-gray-700"
+                  className="close-button"
                 >
                   &times;
                 </button>
