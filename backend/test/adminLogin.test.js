@@ -28,8 +28,6 @@ beforeAll(async () => {
   });
 });
 
-
-
 describe("Admin API Tests", () => {
   it("should login the admin successfully", async () => {
     const res = await request(app).post("/api/auth/admin/login").send({

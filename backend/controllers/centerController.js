@@ -1,6 +1,7 @@
 //centerController.js
 const CollectionCenter = require("../models/Center");
 const CollectionCenterFactory = require("../factories/CollectionCenterFactory");
+const { allocateResources } = require("./ResourceAllocationController");
 exports.addCenter = async (req, res) => {
   try {
     console.log("Received data:", req.body); // Log the request data for debugging
@@ -23,12 +24,19 @@ exports.addCenter = async (req, res) => {
 // Get all collection centers
 exports.getCenters = async (req, res) => {
   try {
+    // Fetch all the centers
     const centers = await CollectionCenter.find();
     res.status(200).json(centers);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch collection centers.", error });
+    console.error(
+      "Error fetching collection centers:",
+      error.message,
+      error.stack
+    );
+    res.status(500).json({
+      message: "Failed to fetch collection centers.",
+      error: error.message || error
+    });
   }
 };
 

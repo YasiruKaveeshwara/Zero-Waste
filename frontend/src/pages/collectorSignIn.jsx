@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 import { CollectorContext } from "../context/collectorContext";
-import { jwtDecode } from 'jwt-decode';
-
+import { jwtDecode } from "jwt-decode";
 
 function CollectorSignin() {
   const [email, setEmail] = useState("");
@@ -104,6 +103,15 @@ function CollectorSignin() {
             </button>
           </div>
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">Not a collector?</p>
+          <Link
+            to="/collector-signup"
+            className="font-bold text-green-600 hover:text-green-800">
+            Sign up here
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -1,152 +1,232 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import AdminDashboardLayout from "../pages/AdminDashboardLayout";
-import ScheduleInfo from "../components/Schedule/ScheduleInfo";
-import CenterSelection from "../components/Schedule/CenterSelection";
+import CenterSelection from "../components/ScheduleForm/CenterSelection";
+import CollectorSelection from "../components/ScheduleForm/CollectorSelection";
+import VehicleSelection from "../components/ScheduleForm/VehicleSelection";
+import DateSelection from "../components/ScheduleForm/DateSelection";
+import TimeSelection from "../components/ScheduleForm/TimeSelection";
+import RequestList from "../components/ScheduleForm/RequestList";
+import { FaCheckCircle } from "react-icons/fa"; // Importing a success icon
+import successImage from "../components/assets/success.jpg"; // Example image for success
 
 
-
-// Component to render the calendar
-const CalendarComponent = ({
-  date,
-  setDate,
-  handleDateClick,
-  scheduledDates,
-  tileClassName,
-}) => {
-  return (
-    <div className="calendar-container mb-10 bg-gradient-to-r from-green-400 to-green-600 p-6 rounded-lg shadow-xl text-white">
-      <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        <Calendar
-          onChange={(date) => {
-            setDate(date);
-            handleDateClick(date);
-          }}
-          value={date}
-          selectRange={false}
-          tileClassName={tileClassName}
-          className="w-full text-green-700"
-        />
-      </div>
-    </div>
-  );
-};
-
-// Main Schedule Page Component
-const SchedulePage = () => {
-  const [date, setDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
-  const [scheduledDates, setScheduledDates] = useState([]);
-  const [scheduleInfo, setScheduleInfo] = useState(null);
+const ScheduleForm = () => {
+  const [collectors, setCollectors] = useState([]);
   const [centers, setCenters] = useState([]);
-  const [selectedCenter, setSelectedCenter] = useState("");
+  const [vehicles, setVehicles] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [formData, setFormData] = useState({
+    collectorId: "",
+    centerId: "",
+    vehicleId: "",
+    date: "",
+    time: "",
+    selectedRequests: [], // Store selected requests
+  });
+  const [selectedCenter, setSelectedCenter] = useState(null); // Added center state
+  const [selectedCollector, setSelectedCollector] = useState(null); // Added collector state
+  const [selectedVehicle, setSelectedVehicle] = useState(null); // Added vehicle state
 
-  // Fetch centers from the server
+  const [filteredRequests, setFilteredRequests] = useState([]); // State for filtered requests
+  const [error, setError] = useState(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const navigate = useNavigate();
+
+  // Fetch collectors
+  useEffect(() => {
+    const fetchCollectors = async () => {
+      try {
+        const collectorsRes = await axios.get(
+          "http://localhost:3050/api/collector"
+        );
+        setCollectors(collectorsRes.data);
+      } catch (err) {
+        setError("Failed to fetch collectors.");
+      }
+    };
+    fetchCollectors();
+  }, []);
+
+  // Fetch centers
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const response = await axios.get("http://localhost:3050/api/centers");
-        setCenters(response.data);
-      } catch (error) {
-        console.error("Error fetching centers:", error);
+        const centersRes = await axios.get("http://localhost:3050/api/centers");
+        setCenters(centersRes.data);
+      } catch (err) {
+        setError("Failed to fetch centers.");
       }
     };
     fetchCenters();
   }, []);
 
-  // Fetch scheduled dates from the server
+  // Fetch vehicles based on selected center
   useEffect(() => {
-    const fetchScheduledDates = async () => {
-      try {
-        if (selectedCenter) {
-          const response = await axios.get(
-            `http://localhost:3050/api/schedule/getByCenter/${selectedCenter}`
+    if (selectedCenter) {
+      const fetchVehicles = async () => {
+        try {
+          const vehiclesRes = await axios.get(
+            `http://localhost:3050/api/vehicles/getVehicles/${selectedCenter}`
           );
-          const schedules = response.data;
-
-          const formattedDates = schedules.map((schedule) => ({
-            date: new Date(schedule.date).toDateString(),
-            info: schedule,
-          }));
-
-          setScheduledDates(formattedDates);
+          setVehicles(vehiclesRes.data);
+        } catch (err) {
+          setError("Failed to fetch vehicles.");
         }
-      } catch (error) {
-        console.error("Error fetching scheduled dates:", error);
-      }
-    };
-    fetchScheduledDates();
+      };
+      fetchVehicles();
+    }
   }, [selectedCenter]);
 
-  const handleDateClick = (selectedDate) => {
-    const selectedSchedule = scheduledDates.find(
-      (scheduledDate) => scheduledDate.date === selectedDate.toDateString()
-    );
-    if (selectedSchedule) {
-      setScheduleInfo(selectedSchedule.info);
+  // Fetch pending requests
+  useEffect(() => {
+    if (selectedCenter) {
+      const fetchPendingRequests = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:3050/api/requests/byCenter/${selectedCenter}`
+          );
+          setPendingRequests(response.data);
+          console.log(response.data);
+        } catch (err) {
+          setError("Failed to fetch pending requests.");
+        }
+      };
+      fetchPendingRequests();
+    }
+  }, [selectedCenter]);
+
+  // Filter requests based on selected date
+  useEffect(() => {
+    if (formData.date && pendingRequests.length > 0) {
+      const selectedDate = new Date(formData.date).toISOString().split("T")[0];
+      const filtered = pendingRequests.filter((request) => {
+        const requestDate = new Date(request.collectionDate)
+          .toISOString()
+          .split("T")[0];
+        return requestDate === selectedDate;
+      });
+      setFilteredRequests(filtered);
+    }
+  }, [formData.date, pendingRequests]);
+
+  // Handle checkbox change for request selection
+  const handleRequestSelection = (e, requestId) => {
+    if (e.target.checked) {
+      setFormData({
+        ...formData,
+        selectedRequests: [...formData.selectedRequests, requestId],
+      });
     } else {
-      setScheduleInfo(null);
+      setFormData({
+        ...formData,
+        selectedRequests: formData.selectedRequests.filter(
+          (id) => id !== requestId
+        ),
+      });
     }
   };
 
-  const tileClassName = ({ date }) => {
-    if (
-      scheduledDates.some(
-        (scheduledDate) => scheduledDate.date === date.toDateString()
-      )
-    ) {
-      return "highlight bg-green-500 text-white rounded-full";
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://localhost:3050/api/schedule/create", {
+        ...formData,
+        centerId: selectedCenter,
+        collectorId: selectedCollector,
+        vehicleId: selectedVehicle,
+      });
+      setShowSuccessPopup(true);
+    } catch (error) {
+      setError("Failed to create schedule.");
     }
-    return "";
   };
 
   return (
-    <AdminDashboardLayout>
-      {/* Header and Create Button */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-semibold text-green-800">
-          Manage Schedules
-        </h1>
-        <Link
-          to="/create-schedule"
-          className="bg-green-500 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-green-600 transition-transform duration-300 transform hover:scale-105"
-        >
-          Create Schedule
-        </Link>
-      </div>
+    <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-8">
+      <h2 className="text-4xl font-bold mb-6 text-green-600 text-center">
+        Create Schedule
+      </h2>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      {/* Select Center */}
       <CenterSelection
         centers={centers}
         selectedCenter={selectedCenter}
-        setSelectedCenter={setSelectedCenter}
+        setSelectedCenter={setSelectedCenter} // Pass the function
       />
 
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto p-8 bg-green-100 rounded-lg shadow-xl flex justify-between">
-        {/* Calendar Component */}
-        <CalendarComponent
-          date={date}
-          setDate={setDate}
-          handleDateClick={handleDateClick}
-          scheduledDates={scheduledDates}
-          tileClassName={tileClassName}
-        />
+      <DateSelection
+        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+      />
 
-        {/* Schedule Info Section */}
-        {scheduleInfo ? (
-          <ScheduleInfo scheduleInfo={scheduleInfo} />
-        ) : (
-          <p className="text-gray-600 text-lg mb-6 font-semibold">
-            No schedule available for the selected date.
-          </p>
-        )}
-      </div>
-    </AdminDashboardLayout>
+      <RequestList
+        filteredRequests={filteredRequests}
+        handleRequestSelection={handleRequestSelection}
+      />
+
+      <CollectorSelection
+        collectors={collectors}
+        selectedCollector={selectedCollector}
+        setSelectedCollector={setSelectedCollector} // Pass the function
+      />
+
+      <VehicleSelection
+        vehicles={vehicles}
+        selectedVehicle={selectedVehicle}
+        setSelectedVehicle={setSelectedVehicle} // Pass the function
+      />
+
+      <TimeSelection
+        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+      />
+
+      <button
+        type="submit"
+        onClick={handleSubmit}
+        className="w-full bg-green-600 text-white p-4 rounded-lg hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md font-bold text-lg"
+      >
+        Create Schedule
+      </button>
+
+
+{showSuccessPopup && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-8 rounded-lg shadow-xl max-w-md mx-auto text-center relative transition-transform transform hover:scale-105">
+      {/* Image Section */}
+      <img
+        src={successImage} // Example image, replace with your own success image if needed
+        alt="Success"
+        className="w-24 h-24 mx-auto rounded-full border-4 border-green-600 mb-4"
+      />
+
+      {/* Success Icon */}
+      <FaCheckCircle className="text-green-600 text-5xl mx-auto mb-4" />
+
+      {/* Success Message */}
+      <h3 className="text-3xl font-bold text-green-600 mb-4">
+        Schedule Created Successfully!
+      </h3>
+      <p className="text-gray-700 mb-6">
+        Your new schedule has been successfully created. You can now view it in the schedule page.
+      </p>
+
+      {/* OK Button */}
+      <button
+        onClick={() => navigate("/schedulePage")}
+        className="bg-green-600 text-white py-2 px-6 rounded-lg shadow-md hover:bg-green-700 transition-all duration-300 ease-in-out font-bold"
+      >
+        OK
+      </button>
+
+      {/* Decorative Element */}
+      <div className="absolute -top-8 -right-8 bg-green-600 w-16 h-16 rounded-full shadow-lg opacity-20"></div>
+    </div>
+  </div>
+)}
+
+    </div>
   );
 };
 
-export default SchedulePage;
+export default ScheduleForm;

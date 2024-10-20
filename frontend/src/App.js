@@ -13,10 +13,11 @@ import NonRegHome from "./pages/NonRegisteredHome";
 // Admin components
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboardLayout from "./pages/AdminDashboardLayout";
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminCollectionCentres from "./pages/AdminCollectionCentres";
 import AdminPeakMonitoring from "./pages/AdminPeakMonitoring";
 import AdminCentreDetails from "./pages/AdminCentreDetails";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminResourceAllocation from "./pages/AdminResourceAllocation";
 
 import CreateSchedule from "./pages/CreateSchedule";
 import SchedulePage from "./pages/SchedulePage"; // Import the SchedulePage component
@@ -52,7 +53,8 @@ function App() {
               <Route path="/resident-request" element={<Request />} />
               <Route path="/waste-progress" element={<Progress />} />
               <Route path="/resident-profile" element={<ResidentProfile />} />
-              <Route path="/schedulePage" element={<TestPage />} />{" "}
+              
+              <Route path="/schedulePage" element={<SchedulePage />} />{" "}
               {/* <Route path="/schedulePage" element={<TestPage />} />{" "} */}
               {/* Route for the Schedule Page */}
               {/* Admin Routes */}
@@ -62,7 +64,7 @@ function App() {
                 path="/admin-dashboard"
                 element={
                   <ProtectedRoute>
-                    <AdminDashboardLayout />
+                    <AdminDashboard />
                   </ProtectedRoute>
                 }
               />
@@ -79,6 +81,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <AdminPeakMonitoring />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin-allocate-resources"
+                element={
+                  <ProtectedRoute>
+                    <AdminResourceAllocation />
                   </ProtectedRoute>
                 }
               />

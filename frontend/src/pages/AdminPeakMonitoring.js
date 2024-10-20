@@ -12,6 +12,7 @@ import {
   Tooltip,
   Legend
 } from "chart.js";
+import "./AdminPeakMonitoring.css"; // Import custom CSS for styling
 
 // Register Chart.js components
 ChartJS.register(
@@ -114,58 +115,60 @@ const AdminPeakMonitoring = () => {
 
   return (
     <AdminDashboardLayout>
-      <h1 className="text-2xl font-bold mb-4">Peak Collection Monitoring</h1>
-      {error && <div className="text-red-600">{error}</div>}
+      <div className="admin-peak-monitoring">
+        <h1 className="title">Peak Collection Monitoring</h1>
+        {error && <div className="error-message">{error}</div>}
 
-      {/* Dropdown to select center */}
-      <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2">
-          Filter by Center
-        </label>
-        <select
-          value={selectedCenter}
-          onChange={(e) => setSelectedCenter(e.target.value)} // Set the selected center
-          className="border p-2 w-full"
-        >
-          <option value="All">All</option>
-          {centers.map((center) => (
-            <option key={center._id} value={center.name}>
-              {center.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {peakPeriods.length === 0 ? (
-        <p>No data available.</p>
-      ) : (
-        <div className="mt-6">
-          {/* Render the Line Chart */}
-          <Line data={data} options={options} />
-
-          {/* Display peak periods in a table */}
-          <table className="min-w-full table-auto mt-4">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Center</th>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Time</th>
-                <th className="px-4 py-2">Total Quantity (kg)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPeriods.map((period, index) => (
-                <tr key={index} className="border-t">
-                  <td className="px-4 py-2">{period.center}</td>
-                  <td className="px-4 py-2">{period.date}</td>
-                  <td className="px-4 py-2">{period.time}</td>
-                  <td className="px-4 py-2">{period.totalQuantity} kg</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Dropdown to select center */}
+        <div className="dropdown-container">
+          <label className="dropdown-label">Filter by Center</label>
+          <select
+            value={selectedCenter}
+            onChange={(e) => setSelectedCenter(e.target.value)} // Set the selected center
+            className="dropdown"
+          >
+            <option value="All">All</option>
+            {centers.map((center) => (
+              <option key={center._id} value={center.name}>
+                {center.name}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
+
+        {peakPeriods.length === 0 ? (
+          <p className="no-data-message">No data available.</p>
+        ) : (
+          <div className="chart-and-table-container">
+            {/* Render the Line Chart */}
+            <div className="chart-container">
+              <Line data={data} options={options} />
+            </div>
+
+            {/* Display peak periods in a table */}
+            <table className="peak-table">
+              <thead>
+                <tr>
+                  <th>Center</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Total Quantity (kg)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPeriods.map((period, index) => (
+                  <tr key={index}>
+                    <td>{period.center}</td>
+                    <td>{period.date}</td>
+                    <td>{period.time}</td>
+                    <td>{period.totalQuantity} kg</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </AdminDashboardLayout>
   );
 };

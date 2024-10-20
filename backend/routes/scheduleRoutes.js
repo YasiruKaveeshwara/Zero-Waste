@@ -15,4 +15,8 @@ router.get("/getAll", scheduleController.getAllSchedules); // Route for getting 
 // Route to get schedules by collection center
 router.get("/getByCenter/:centerId", scheduleController.getSchedulesByCenter);
 
+// -----------------------Yasiru---------------------------
+router.put("/accept/:scheduleId", scheduleController.updateScheduleStatus);
+router.put("/cancel/:scheduleId", scheduleController.cancelSchedule);
+
 module.exports = router;

@@ -159,3 +159,69 @@ exports.getSchedulesByCenter = async (req, res) => {
       .json({ message: "Error fetching schedules.", error });
   }
 };
+
+//--------------------------Yasiru--------------------------------
+
+// Update schedule status to 'accepted'
+exports.updateScheduleStatus = async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+
+    // Validate input
+    if (!scheduleId) {
+      return res.status(400).json({ message: "Schedule ID is required." });
+    }
+
+    // Update the schedule status to 'accepted'
+    const updatedSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
+      { status: "accepted" },
+      { new: true }
+    );
+
+    if (!updatedSchedule) {
+      return res.status(404).json({ message: "Schedule not found." });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Schedule accepted.", schedule: updatedSchedule });
+  } catch (error) {
+    console.error("Error updating schedule status:", error);
+    return res
+      .status(500)
+      .json({ message: "Error updating schedule status.", error });
+  }
+};
+
+// Update schedule status to 'canceled'
+exports.cancelSchedule = async (req, res) => {
+  try {
+    const { scheduleId } = req.params;
+
+    // Validate input
+    if (!scheduleId) {
+      return res.status(400).json({ message: "Schedule ID is required." });
+    }
+
+    // Update the schedule status to 'canceled'
+    const updatedSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
+      { status: "canceled" },
+      { new: true }
+    );
+
+    if (!updatedSchedule) {
+      return res.status(404).json({ message: "Schedule not found." });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Schedule canceled.", schedule: updatedSchedule });
+  } catch (error) {
+    console.error("Error canceling schedule:", error);
+    return res
+      .status(500)
+      .json({ message: "Error canceling schedule.", error });
+  }
+};
