@@ -49,7 +49,10 @@ describe("Schedule Controller Tests", () => {
         selectedRequests: ["req1", "req2"],
       };
 
-      ScheduleRepository.findByCollectorDateTime.mockResolvedValue({}); // Mock existing schedule
+      ScheduleRepository.findByCollectorDateTime.mockResolvedValue({
+        // Mock a schedule that already exists
+        _id: "existing-schedule",
+      });
       await scheduleController.createSchedule(req, res);
 
       expect(res.status).toHaveBeenCalledWith(409);
@@ -69,12 +72,22 @@ describe("Schedule Controller Tests", () => {
         selectedRequests: ["req1", "req2"],
       };
 
-      ScheduleService.validateEntities.mockResolvedValue({ isValid: true });
+      ScheduleService.validateEntities.mockResolvedValue({
+        isValid: true,
+        message: "",
+      });
       WasteRequest.find.mockResolvedValue([
         { _id: "req1", status: "pending" },
         { _id: "req2", status: "pending" },
       ]);
-      ScheduleFactory.createSchedule.mockResolvedValue({});
+      ScheduleFactory.createSchedule.mockResolvedValue({
+        collector: '670cef5c619101c5f74617d2',
+        center: '670c9c9bc75ed859fcbb20aa',
+        vehicle: '670c9c9bc75ed859fcbb20aa',
+        date: '2024-10-01',
+        time: '09:00 AM',
+        requests: ['req1', 'req2'],
+      });
 
       await scheduleController.createSchedule(req, res);
 

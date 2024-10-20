@@ -16,6 +16,7 @@ describe("Schedule Factory Tests", () => {
       date: "2024-10-01",
       time: "09:00 AM",
       requests: ["req1", "req2"],
+      status: 'scheduled'
     };
 
     Schedule.mockReturnValue({

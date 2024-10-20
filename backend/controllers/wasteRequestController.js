@@ -185,6 +185,17 @@ exports.markAsPending = async (req, res) => {
   }
 };
 
+// get all request into the database
+exports.getAllRequest = async (req, res) => {
+  try {
+    const requests = await WasteRequest.find();
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error("Error fetching waste requests:", error);
+    res.status(500).json({ message: "Error fetching waste requests.", error });
+  }
+};
+
 // Get all pending requests by collection center (centerId as ObjectId)
 exports.getRequestsByCenter = async (req, res) => {
   const { centerId } = req.params; // Extract centerId from request params
