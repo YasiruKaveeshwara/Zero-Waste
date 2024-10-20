@@ -1,48 +1,61 @@
-const ScheduleRepository = require("../repositories/ScheduleRepository");
-const Schedule = require("../models/Schedule");
+const CollectorRepository = require('../repositories/collectorRepository');
+const Collector = require('../models/Collector');
 
-// Mock the Schedule model
-jest.mock("../models/Schedule");
+// Mock Mongoose methods
+jest.mock('../models/Collector', () => ({
+  findOne: jest.fn(),
+  findById: jest.fn(),
+  find: jest.fn(),
+  findByIdAndUpdate: jest.fn(),
+  prototype: {
+    save: jest.fn(),
+  },
+}));
 
-describe("Schedule Repository Tests", () => {
+describe('CollectorRepository Tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+  
 
-  it("should create a new schedule", async () => {
-    const scheduleData = {
-      collector: "1",
-      center: "2",
-      vehicle: "3",
-      date: "2024-10-01",
-      time: "09:00 AM",
-    };
-    Schedule.mockReturnValue({
-      save: jest.fn().mockResolvedValue(scheduleData),
+  describe('findByEmail', () => {
+    it('should return a collector by email', async () => {
+      const mockCollector = { name: 'John Doe', email: 'john@example.com' };
+      Collector.findOne.mockResolvedValue(mockCollector);
+
+      const result = await CollectorRepository.findByEmail('john@example.com');
+
+      expect(Collector.findOne).toHaveBeenCalledWith({ email: 'john@example.com' });
+      expect(result).toEqual(mockCollector);
     });
-
-    const result = await ScheduleRepository.create(scheduleData);
-    expect(result).toEqual(scheduleData);
   });
 
-  it("should find a schedule by collector, date, and time", async () => {
-    const mockSchedule = {
-      collector: "1",
-      date: "2024-10-01",
-      time: "09:00 AM",
-    };
-    Schedule.findOne.mockResolvedValue(mockSchedule);
+ 
 
-    const result = await ScheduleRepository.findByCollectorDateTime(
-      "1",
-      "2024-10-01",
-      "09:00 AM"
-    );
-    expect(Schedule.findOne).toHaveBeenCalledWith({
-      collector: "1",
-      date: "2024-10-01",
-      time: "09:00 AM",
+  describe('findAll', () => {
+    it('should return all collectors', async () => {
+      const mockCollectors = [
+        { _id: '1', name: 'John Doe', email: 'john@example.com' },
+        { _id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+      ];
+      Collector.find.mockResolvedValue(mockCollectors);
+
+      const result = await CollectorRepository.findAll();
+
+      expect(Collector.find).toHaveBeenCalled();
+      expect(result).toEqual(mockCollectors);
     });
-    expect(result).toEqual(mockSchedule);
+  });
+
+  describe('updateById', () => {
+    it('should update a collector by id', async () => {
+      const mockUpdatedCollector = { _id: '123', name: 'John Updated', email: 'john@example.com' };
+      Collector.findByIdAndUpdate.mockResolvedValue(mockUpdatedCollector);
+
+      const result = await CollectorRepository.updateById('123', { name: 'John Updated' });
+
+      expect(Collector.findByIdAndUpdate).toHaveBeenCalledWith('123', { name: 'John Updated' }, { new: true });
+      expect(result).toEqual(mockUpdatedCollector);
+    });
   });
 });

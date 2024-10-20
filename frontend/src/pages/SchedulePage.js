@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import AdminDashboardLayout from "../pages/AdminDashboardLayout";
@@ -8,15 +7,16 @@ import ScheduleInfo from "../components/Schedule/ScheduleInfo";
 import CenterSelection from "../components/Schedule/CenterSelection";
 import CalendarComponent from "../components/Schedule/CalendarComponent";
 import "./SchedulePage.css"; // Custom CSS for additional styling
+import RequestList from "../components/Schedule/RequestList";
 
 // Main Schedule Page Component
 const SchedulePage = () => {
   const [date, setDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState("");
   const [scheduledDates, setScheduledDates] = useState([]);
   const [scheduleInfo, setScheduleInfo] = useState(null);
   const [centers, setCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState("");
+  const [requests, setRequests] = useState([]); // State for requests
 
   // Fetch centers from the server
   useEffect(() => {
@@ -55,14 +55,25 @@ const SchedulePage = () => {
     fetchScheduledDates();
   }, [selectedCenter]);
 
+  // Fetch the requests for the selected schedule
+  const fetchRequests = (schedule) => {
+    if (schedule.requests && schedule.requests.length > 0) {
+      setRequests(schedule.requests);
+    } else {
+      setRequests([]);
+    }
+  };
+
   const handleDateClick = (selectedDate) => {
     const selectedSchedule = scheduledDates.find(
       (scheduledDate) => scheduledDate.date === selectedDate.toDateString()
     );
     if (selectedSchedule) {
       setScheduleInfo(selectedSchedule.info);
+      fetchRequests(selectedSchedule.info); // Fetch requests based on the selected schedule
     } else {
       setScheduleInfo(null);
+      setRequests([]); // Clear requests if no schedule is selected
     }
   };
 
@@ -122,6 +133,20 @@ const SchedulePage = () => {
             </p>
           )}
         </div>
+      </div>
+
+      {/* Requests Section */}
+      <div className="mt-10">
+        <h2 className="text-3xl font-semibold text-green-900 mb-6">
+          Waste Collection Requests
+        </h2>
+        {requests.length > 0 ? (
+          <RequestList requests={requests} />
+        ) : (
+          <p className="text-gray-600 text-lg font-medium">
+            No requests available for the selected schedule.
+          </p>
+        )}
       </div>
     </AdminDashboardLayout>
   );

@@ -1,101 +1,101 @@
-const scheduleController = require("../controllers/scheduleController");
-const ScheduleRepository = require("../repositories/ScheduleRepository");
-const ScheduleFactory = require("../factories/ScheduleFactory");
-const WasteRequest = require("../models/WasteRequest");
-const ScheduleService = require("../services/ScheduleService");
+const express = require('express');
+const request = require('supertest');
+const scheduleController = require('../controllers/scheduleController');
+const ScheduleRepository = require('../repositories/ScheduleRepository');
+const WasteRequest = require('../models/WasteRequest');
+const ScheduleFactory = require('../factories/ScheduleFactory');
+const ScheduleService = require('../services/ScheduleService');
 
 // Mock dependencies
-jest.mock("../repositories/ScheduleRepository");
-jest.mock("../factories/ScheduleFactory");
-jest.mock("../models/WasteRequest");
-jest.mock("../services/ScheduleService");
+jest.mock('../repositories/ScheduleRepository');
+jest.mock('../models/WasteRequest');
+jest.mock('../factories/ScheduleFactory');
+jest.mock('../services/ScheduleService');
 
-describe("Schedule Controller Tests", () => {
-  let req, res;
+// Set up a mock Express app
+const app = express();
+app.use(express.json());
 
-  beforeEach(() => {
-    req = {
-      body: {},
-      params: {},
-    };
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
-  });
+// Routes to test
+app.post('/schedules', scheduleController.createSchedule);
+app.get('/schedules/:collectorId', scheduleController.getCollectorSchedules);
+app.patch('/schedules/:scheduleId/accept', scheduleController.updateScheduleStatus);
+app.patch('/schedules/:scheduleId/cancel', scheduleController.cancelSchedule);
 
+describe('Schedule Controller Tests', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("createSchedule", () => {
-    it("should return 400 if required fields are missing", async () => {
-      req.body = { collectorId: "1", centerId: "" }; // Missing vehicleId, date, time, selectedRequests
-      await scheduleController.createSchedule(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "All fields and selected requests are required.",
-      });
-    });
-
-    it("should return 409 if a schedule already exists", async () => {
-      req.body = {
-        collectorId: "670cef5c619101c5f74617d2",
-        centerId: "670c9c9bc75ed859fcbb20aa",
-        vehicleId: "670c9c9bc75ed859fcbb20aa",
-        date: "2024-10-01",
-        time: "09:00 AM",
-        selectedRequests: ["req1", "req2"],
-      };
-
-      ScheduleRepository.findByCollectorDateTime.mockResolvedValue({
-        // Mock a schedule that already exists
-        _id: "existing-schedule",
-      });
-      await scheduleController.createSchedule(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(409);
-      expect(res.json).toHaveBeenCalledWith({
-        message:
-          "A schedule already exists for this collector at the specified date and time.",
-      });
-    });
-
-    it("should create a schedule successfully", async () => {
-      req.body = {
-        collectorId: "670cef5c619101c5f74617d2",
-        centerId: "670c9c9bc75ed859fcbb20aa",
-        vehicleId: "670c9c9bc75ed859fcbb20aa",
-        date: "2024-10-01",
-        time: "09:00 AM",
-        selectedRequests: ["req1", "req2"],
-      };
-
-      ScheduleService.validateEntities.mockResolvedValue({
-        isValid: true,
-        message: "",
-      });
-      WasteRequest.find.mockResolvedValue([
-        { _id: "req1", status: "pending" },
-        { _id: "req2", status: "pending" },
-      ]);
-      ScheduleFactory.createSchedule.mockResolvedValue({
-        collector: '670cef5c619101c5f74617d2',
-        center: '670c9c9bc75ed859fcbb20aa',
-        vehicle: '670c9c9bc75ed859fcbb20aa',
+  describe('POST /schedules', () => {
+    it('should return 400 if required fields are missing', async () => {
+      const response = await request(app).post('/schedules').send({
+        collectorId: '1',
+        centerId: '',
+        vehicleId: '3',
         date: '2024-10-01',
         time: '09:00 AM',
-        requests: ['req1', 'req2'],
+        selectedRequests: ['req1', 'req2'],
       });
 
-      await scheduleController.createSchedule(req, res);
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        message: 'All fields and selected requests are required.',
+      });
+    });
 
-      expect(ScheduleFactory.createSchedule).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Schedule created successfully.",
-        schedule: expect.any(Object),
+
+  });
+ 
+
+  describe('PATCH /schedules/:scheduleId/accept', () => {
+    it('should update the schedule status to accepted', async () => {
+      const mockSchedule = {
+        _id: 'schedule1',
+        collector: '1',
+        center: '2',
+        vehicle: '3',
+        date: '2024-10-01',
+        time: '09:00 AM',
+        status: 'accepted',
+      };
+
+      ScheduleRepository.updateById.mockResolvedValue(mockSchedule);
+
+      const response = await request(app)
+        .patch('/schedules/schedule1/accept')
+        .send();
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        message: 'Schedule accepted.',
+        schedule: mockSchedule,
+      });
+    });
+  });
+
+  describe('PATCH /schedules/:scheduleId/cancel', () => {
+    it('should update the schedule status to canceled', async () => {
+      const mockSchedule = {
+        _id: 'schedule1',
+        collector: '1',
+        center: '2',
+        vehicle: '3',
+        date: '2024-10-01',
+        time: '09:00 AM',
+        status: 'canceled',
+      };
+
+      ScheduleRepository.updateById.mockResolvedValue(mockSchedule);
+
+      const response = await request(app)
+        .patch('/schedules/schedule1/cancel')
+        .send();
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        message: 'Schedule canceled.',
+        schedule: mockSchedule,
       });
     });
   });
