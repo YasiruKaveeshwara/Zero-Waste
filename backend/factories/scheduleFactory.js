@@ -1,7 +1,7 @@
 const Schedule = require("../models/Schedule");
 
 class ScheduleFactory {
-  static async createNormalSchedule({
+  static async createSchedule({
     collector,
     center,
     vehicle,
@@ -20,32 +20,6 @@ class ScheduleFactory {
     });
     await schedule.save();
     return schedule;
-  }
-
-  static createUrgentSchedule({ collector, center, vehicle, date, time, requests}) {
-    const schedule = new Schedule({
-      collector,
-      center,
-      vehicle,
-      date,
-      time,
-      status: "urgent", // Urgent status
-      requests
-    });
-    return schedule.save(); // Ensure to save and return the promise
-  }
-
-  static createHolidaySchedule({ collector, center, vehicle, date, time }) {
-    const schedule = new Schedule({
-      collector,
-      center,
-      vehicle,
-      date,
-      time,
-      status: "holiday", // Holiday status
-      requests
-    });
-    return schedule.save(); // Ensure to save and return the promise
   }
 }
 

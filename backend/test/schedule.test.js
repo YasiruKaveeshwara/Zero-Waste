@@ -2,8 +2,8 @@ const request = require("supertest");
 const app = require("../server"); // Import your server
 const mongoose = require("mongoose");
 const Schedule = require("../models/Schedule");
-const Collector = require("../models/collector");
-const Center = require("../models/CollectionCenter");
+const Collector = require("../models/Collector");
+const Center = require("../models/Center");
 const Vehicle = require("../models/Vehicle");
 const mongoMemoryServer = require("mongodb-memory-server"); // For in-memory MongoDB
 

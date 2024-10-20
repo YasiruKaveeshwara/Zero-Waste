@@ -6,7 +6,8 @@ import {
   FaChartLine,
   FaSignOutAlt,
   FaTruck,
-  FaBars
+  FaBars,
+  FaClipboardList
 } from "react-icons/fa"; // Import icons from react-icons
 import logo from "../images/leaf.png"; // Ensure the correct path to your logo is provided
 
@@ -85,6 +86,15 @@ const AdminSidebar = () => {
                 Resource Allocation
               </Link>
             </li>
+            <li className="mb-2">
+            <Link
+              to="/schedulePage"
+              className="flex items-center text-[#185233] hover:bg-gray-100 px-4 py-2 rounded-md"
+            >
+              <FaClipboardList className="mr-3" />
+              Schedules
+            </Link>
+          </li>
             <li>
               <div
                 onClick={handleLogout}
