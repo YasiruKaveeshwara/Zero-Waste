@@ -1,6 +1,4 @@
-// controllers/collectionCenterController.js
-
-const CollectionCenter = require("../models/Center");
+const CollectionCenter = require('../models/Center');
 
 // Controller to get all collection centers
 exports.getAllCollectionCenters = async (req, res) => {
@@ -8,6 +6,6 @@ exports.getAllCollectionCenters = async (req, res) => {
     const centers = await CollectionCenter.find();
     res.status(200).json(centers);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching collection centers" });
+    res.status(500).json({ message: 'Error fetching collection centers' });
   }
 };

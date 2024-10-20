@@ -10,6 +10,8 @@ import ResidentProfile from "./pages/ResidentProfile";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ResidentProvider } from "./pages/ResidentContext";
 import NonRegHome from "./pages/NonRegisteredHome";
+import Payment from "./pages/PaymentPage"
+import Logout from "./pages/Logout"
 // Admin components
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboardLayout from "./pages/AdminDashboardLayout";
@@ -53,6 +55,8 @@ function App() {
               <Route path="/resident-request" element={<Request />} />
               <Route path="/waste-progress" element={<Progress />} />
               <Route path="/resident-profile" element={<ResidentProfile />} />
+              <Route path="/payment" element={<Payment />} /> 
+              <Route path="/logout" element={<Logout />} /> 
               
               <Route path="/schedulePage" element={<SchedulePage />} />{" "}
               {/* <Route path="/schedulePage" element={<TestPage />} />{" "} */}

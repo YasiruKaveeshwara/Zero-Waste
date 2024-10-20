@@ -87,6 +87,9 @@ const NonRegisteredHome = () => {
           <a href='/admin-login' className='nonreg-nav-link'>
             Admin Login
           </a>
+          <a href='/collector-signup' className='nonreg-nav-link'>
+            Collector Login
+          </a>
         </nav>
       </header>
 
