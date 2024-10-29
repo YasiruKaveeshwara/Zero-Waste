@@ -39,4 +39,7 @@ router.get(
 // Payment routes (protected)
 router.post("/payment/process", protect, paymentController.processPayment);
 
+// Login route for admin
+router.post("/admin/login", authController.loginAdmin);
+
 module.exports = router;

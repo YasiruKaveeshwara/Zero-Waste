@@ -32,7 +32,7 @@ db.connect()
   });
 
 // Routes
-app.use("/api/auth", residentRoutes); // Resident Routes
+// app.use("/api/auth", residentRoutes); // Resident Routes
 app.use("/api/collector", collectorRoutes); // Collector Routes
 app.use("/api/issues", issueRoutes); // Issue Routes
 app.use("/api/requests", requestRoutes); // Waste Request Routes

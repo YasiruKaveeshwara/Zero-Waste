@@ -1,5 +1,5 @@
 // repositories/CollectorRepository.js
-const Collector = require("../models/Collector");
+const Collector = require("../models/collector");
 
 class CollectorRepository {
   async create(collectorData) {
