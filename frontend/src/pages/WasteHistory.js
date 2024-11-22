@@ -13,8 +13,9 @@ function WasteHistory() {
   const [wasteData, setWasteData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingRequest, setEditingRequest] = useState(null);
 
-  // Function to fetch waste data from the backend
+  // Fetch waste data from the backend
   const fetchWasteData = async () => {
     setLoading(true);
     setError(null); // Reset error state before fetching
@@ -36,14 +37,55 @@ function WasteHistory() {
     }
   };
 
-  // Fetch data when the component mounts
   useEffect(() => {
     fetchWasteData();
   }, []);
 
-  // Function to handle search input changes
+  // Handle search input changes
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  // Handle waste request delete
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3050/api/auth/waste/request/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setWasteData(wasteData.filter((request) => request._id !== id));
+    } catch (err) {
+      console.error("Error deleting waste request:", err);
+    }
+  };
+
+  // Handle waste request edit (simplified form)
+  const handleEdit = (request) => {
+    setEditingRequest(request);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(
+        `http://localhost:3050/api/auth/waste/request/${editingRequest._id}`,
+        editingRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setWasteData(
+        wasteData.map((request) =>
+          request._id === editingRequest._id ? response.data : request
+        )
+      );
+      setEditingRequest(null); // Clear the editing form
+    } catch (err) {
+      console.error("Error updating waste request:", err);
+    }
   };
 
   // Filter waste data based on search query
@@ -54,7 +96,7 @@ function WasteHistory() {
   return (
     <div className="waste-history-container">
       <SidebarIcon />
-      <div className="main-content">
+      <div className="main-content-history">
         <Header />
         <div className="search-container">
           <input
@@ -80,6 +122,7 @@ function WasteHistory() {
                   <th>Type of Waste</th>
                   <th>Quantity</th>
                   <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,11 +138,25 @@ function WasteHistory() {
                       <td className={`status ${entry.status.toLowerCase()}`}>
                         {entry.status}
                       </td>
+                      <td>
+                        <button
+                          className="action-button edit-button"
+                          onClick={() => handleEdit(entry)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="action-button delete-button"
+                          onClick={() => handleDelete(entry._id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="no-data">
+                    <td colSpan="6" className="no-data">
                       No data available
                     </td>
                   </tr>
@@ -108,6 +165,57 @@ function WasteHistory() {
             </table>
           )}
         </div>
+
+        {editingRequest && (
+          <form onSubmit={handleEditSubmit} className="edit-form-container">
+            <h3>Edit Waste Request</h3>
+            <input
+              type="text"
+              value={editingRequest.wasteType}
+              onChange={(e) =>
+                setEditingRequest({
+                  ...editingRequest,
+                  wasteType: e.target.value,
+                })
+              }
+            />
+            <input
+              type="number"
+              value={editingRequest.quantity}
+              onChange={(e) =>
+                setEditingRequest({
+                  ...editingRequest,
+                  quantity: e.target.value,
+                })
+              }
+            />
+            <input
+              type="date"
+              value={new Date(editingRequest.collectionDate)
+                .toISOString()
+                .split("T")[0]}
+              onChange={(e) =>
+                setEditingRequest({
+                  ...editingRequest,
+                  collectionDate: e.target.value,
+                })
+              }
+            />
+            <input
+              type="time"
+              value={editingRequest.collectionTime}
+              onChange={(e) =>
+                setEditingRequest({
+                  ...editingRequest,
+                  collectionTime: e.target.value,
+                })
+              }
+            />
+            <button type="submit" className="submit-button">
+              Submit Changes
+            </button>
+          </form>
+        )}
         <Footer />
       </div>
     </div>

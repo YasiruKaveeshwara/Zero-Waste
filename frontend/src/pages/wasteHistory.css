@@ -1,15 +1,14 @@
 .waste-history-container {
   display: flex;
-  background-color: #f4f8f6;
+  background-color: #ffffff;
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
 }
 
-.main-content {
-  margin-left: 220px;
-  padding: 40px;
-  width: 85%;
-  background-color: #f4f8f6;
+.main-content-history {
+  margin-left: 200px;
+  width: 100%;
+  background-color: #fafafa;
 }
 
 .search-container {
@@ -20,7 +19,7 @@
 }
 
 .search-bar {
-  width: 400px;
+  width: 500px;
   padding: 12px;
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -39,6 +38,8 @@
 
 .waste-history-table {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   border-collapse: collapse;
   margin-top: 10px;
   border-radius: 8px;
@@ -47,10 +48,10 @@
 
 .waste-history-table th,
 .waste-history-table td {
-  padding: 12px;
+  padding: 14px;
   text-align: left;
   border: 1px solid #ddd;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .waste-history-table th {
@@ -83,14 +84,75 @@
   font-weight: bold;
 }
 
-@media (max-width: 768px) {
-  .waste-history-table th,
-  .waste-history-table td {
-    font-size: 12px;
-    padding: 8px;
-  }
+/* Button styles */
+.action-button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 0 5px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
 
-  .search-bar {
-    width: 100%;
-  }
+.action-button:hover {
+  transform: translateY(-1px);
+}
+
+/* Edit button style */
+.edit-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #388e3c;
+}
+
+/* Delete button style */
+.delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Form styles for editing */
+.edit-form-container {
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9fafb;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.edit-form-container h3 {
+  margin-bottom: 10px;
+}
+
+.edit-form-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  background-color: #185233;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #77c23e;
+  transform: translateY(-1px);
 }

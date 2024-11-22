@@ -1,20 +1,46 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../images/leaf.png";
 import { CollectorContext } from "../context/collectorContext";
-import QrScanner from "react-qr-scanner"; // Import the QR scanner
+import QrScanner from "qr-scanner"; // Import QR Scanner library
 import "./collectorHeader.css";
 import qr from "../images/qrcode.gif";
 import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
 
 function CollectorHeader() {
-  const { currentUser, logout } = useContext(CollectorContext); // Use the logout method
+  const { currentUser, logout } = useContext(CollectorContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // For redirecting to login page
+  const [scanner, setScanner] = useState(null);
+  const videoRef = useRef(null);
+  const navigate = useNavigate(); 
+
+  useEffect(() => {
+    if (isModalOpen && videoRef.current) {
+      // Initialize the QR scanner
+      const qrScanner = new QrScanner(
+        videoRef.current,
+        (result) => {
+          console.log('Scanned result:', result.data);
+          setIsModalOpen(false);
+          qrScanner.stop(); // Stop the scanner after scan
+          navigate(`/collector/progress?residentId=${result.data}`);
+        },
+        {
+          highlightScanRegion: true, // Optional: To highlight the scan area
+        }
+      );
+      qrScanner.start(); // Start the camera and scanning
+      setScanner(qrScanner);
+
+      return () => {
+        qrScanner.stop(); // Stop the scanner when modal is closed or component unmounts
+      };
+    }
+  }, [isModalOpen, navigate]);
 
   const handleLogout = () => {
-    logout(); // Call the logout method from CollectorContext
-    navigate("/collector-signin"); // Redirect to login page
+    logout();
+    navigate("/collector-signin");
   };
 
   return (
@@ -31,11 +57,11 @@ function CollectorHeader() {
           <Link to='/collector/dashboard' className='transition duration-300 hover:text-green-300'>
             Dashboard
           </Link>
-          <Link to='/collector/routes' className='transition duration-300 hover:text-green-300'>
-            Routes
+          <Link to='/collector/progress' className='transition duration-300 hover:text-green-300'>
+            Progress
           </Link>
-          <Link to='/collector/notifications' className='transition duration-300 hover:text-green-300'>
-            Notifications
+          <Link to='/collector/schedule' className='transition duration-300 hover:text-green-300'>
+            Schedule
           </Link>
           <Link to='/collector/profile' className='transition duration-300 hover:text-green-300'>
             Profile
@@ -54,7 +80,7 @@ function CollectorHeader() {
               <button
                 onClick={handleLogout}
                 className='flex items-center px-4 py-2 text-white transition duration-300 bg-red-500 rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'>
-                <FaSignOutAlt className='mr-2' /> {/* Logout Icon */}
+                <FaSignOutAlt className='mr-2' />
                 Logout
               </button>
             </>
@@ -62,35 +88,30 @@ function CollectorHeader() {
             <Link
               to='/collector-signin'
               className='flex items-center px-4 py-2 text-white transition duration-300 bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'>
-              <FaSignInAlt className='mr-2' /> {/* Login Icon */}
+              <FaSignInAlt className='mr-2' />
               Login
             </Link>
           )}
         </div>
       </div>
 
+      {/* Modal for QR Code Scanner */}
       {isModalOpen && (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-75'>
-          <div className='bg-green-600 p-4 rounded-lg shadow-lg w-[400px] h-[400px] bg-opacity-40'>
-            <h2 className='mb-4 text-lg font-bold text-center text-white'>Scan QR Code</h2>
+          <div className='bg-white p-6 rounded-lg shadow-lg w-[400px] h-[400px]'>
+            <h2 className='mb-4 text-lg font-bold text-center text-black'>Scan QR Code</h2>
 
-            <div className='relative w-[300px] h-[300px] mx-auto border-4 border-white rounded-lg overflow-hidden'>
-              <QrScanner
-                delay={300}
-                style={{ width: "300px", height: "300px", objectFit: "cover" }}
-                onError={console.error}
-                onScan={(data) => {
-                  if (data) {
-                    setIsModalOpen(false);
-                    navigate(`/collector/progress?residentId=${data.text}`); // Navigate with the residentId
-                  }
-                }}
-              />
-            </div>
+            {/* Video element for displaying the camera feed */}
+            <video ref={videoRef} className="w-full h-full" />
 
             <button
-              onClick={() => setIsModalOpen(false)}
-              className='px-4 py-2 text-white bg-red-500 rounded-full hover:bg-red-600 focus:outline-none'>
+              onClick={() => {
+                setIsModalOpen(false);
+                if (scanner) {
+                  scanner.stop();
+                }
+              }}
+              className='px-4 py-2 mt-4 text-white bg-red-500 rounded-full hover:bg-red-600 focus:outline-none'>
               Close
             </button>
           </div>

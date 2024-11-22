@@ -3,7 +3,7 @@ import axios from "axios";
 import { FaExclamationTriangle } from "react-icons/fa"; // Import report icon
 import { useLocation } from "react-router-dom";
 
-const CollectorProgress = () => {
+function CollectorProgress() {
   const [requests, setRequests] = useState([]);
   const [filter, setFilter] = useState("today"); // Default filter is today
   const [message, setMessage] = useState("");
@@ -16,21 +16,14 @@ const CollectorProgress = () => {
   const queryParams = new URLSearchParams(location.search);
   const scannedResidentId = queryParams.get("residentId");
 
-  const clearMessageAfterTimeout = () => {
-    setTimeout(() => {
-      setMessage("");
-    }, 2000); // 2 seconds timer
-  };
-
-  // Fetch collection requests based on filter
+  // Fetch collection requests based on filter or residentId
   useEffect(() => {
-    fetchRequests();
     if (scannedResidentId) {
       handleAutoCollect(scannedResidentId); // Automatically collect requests for the scanned resident
     }
-    const interval = setInterval(fetchRequests, 5000); // Polling every 5 seconds for real-time updates
-    return () => clearInterval(interval); // Clean up interval on component unmount
-  }, [filter, scannedResidentId]);
+    fetchRequests(); // Fetch requests based on the current filter
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter, scannedResidentId]); // Trigger fetching whenever the filter or scannedResidentId changes
 
   const fetchRequests = async () => {
     try {
@@ -42,16 +35,36 @@ const CollectorProgress = () => {
     }
   };
 
+  const clearMessageAfterTimeout = () => {
+    setTimeout(() => {
+      setMessage("");
+    }, 2000); // 2 seconds timer
+  };
+
   // Automatically mark requests as collected for the resident ID scanned
   const handleAutoCollect = async (residentId) => {
-    const requestsToCollect = requests.filter((request) => request.resident._id === residentId && request.status !== "collected");
-    for (const request of requestsToCollect) {
-      try {
-        await axios.put(`http://localhost:3050/api/requests/${request._id}/collected`);
-        setMessage(`Request for ${request.resident.residentName} has been marked as collected.`);
-      } catch (error) {
-        console.error(`Error marking request ${request._id} as collected:`, error);
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.get(`http://localhost:3050/api/requests?residentId=${residentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const requestsToCollect = response.data.filter((request) => request.status !== "collected");
+
+      for (const request of requestsToCollect) {
+        await axios.put(
+          `http://localhost:3050/api/requests/${request._id}/collected`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
       }
+
+      setMessage(`All requests for resident ID ${residentId} have been marked as collected.`);
+      fetchRequests(); // Fetch the updated requests
+    } catch (error) {
+      console.error("Error marking requests as collected:", error);
+      setMessage("Error updating the status of requests.");
     }
   };
 
@@ -96,14 +109,14 @@ const CollectorProgress = () => {
       setMessage("Request ID and issue description are required.");
       return;
     }
-  
+
     const token = localStorage.getItem("authToken"); // Retrieve the JWT token from localStorage
-  
+
     if (!token) {
       setMessage("Not authorized. Please log in again.");
       return;
     }
-  
+
     axios
       .post(
         `http://localhost:3050/api/issues/report`,
@@ -129,7 +142,6 @@ const CollectorProgress = () => {
         clearMessageAfterTimeout();
       });
   };
-  
 
   return (
     <div className='container p-6 mx-auto'>
@@ -141,12 +153,14 @@ const CollectorProgress = () => {
       {/* Filter by Days */}
       <div className='mx-32 mb-6'>
         <label className='font-semibold text-gray-700'>Filter by Day:</label>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)} className='px-4 py-2 ml-4 text-gray-600 border rounded-lg'>
+        <select
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)} // Only update the filter state here
+          className='px-4 py-2 ml-4 text-gray-600 border rounded-lg'>
           <option value='today'>Today</option>
-          <option value='yesterday'>Yesterday</option>
           <option value='week'>This Week</option>
-          <option value='month'>This Month</option>
           <option value='upcoming'>Upcoming</option>
+          <option value='month'>This Month</option>
         </select>
       </div>
 
@@ -243,6 +257,6 @@ const CollectorProgress = () => {
       )}
     </div>
   );
-};
+}
 
 export default CollectorProgress;
