@@ -66,73 +66,6 @@ exports.getWasteProgress = async (req, res) => {
   }
 };
 
-// Get requests based on filter (today, yesterday, week, month, upcoming)
-exports.getRequestsByFilter = async (req, res) => {
-  const { filter } = req.query;
-  const today = moment().startOf("day");
-  const tomorrow = moment(today).add(1, "days");
-  const yesterday = moment(today).subtract(1, "days");
-  const weekStart = moment(today).startOf("week");
-  const monthStart = moment(today).startOf("month");
-
-  let dateFilter;
-
-  switch (filter) {
-    case "today":
-      dateFilter = {
-        collectionDate: {
-          // Includes all times today (from 00:00 to 23:59)
-          $gte: today.toDate(),
-          $lt: tomorrow.toDate(),
-        },
-      };
-      break;
-    case "yesterday":
-      dateFilter = {
-        collectionDate: {
-          // Only includes yesterday's date
-          $gte: yesterday.toDate(),
-          $lt: today.toDate(),
-        },
-      };
-      break;
-    case "week":
-      dateFilter = {
-        collectionDate: {
-          // Includes requests from the start of the week to tomorrow (this ensures "today" is included)
-          $gte: weekStart.toDate(),
-          $lt: tomorrow.toDate(),
-        },
-      };
-      break;
-    case "month":
-      dateFilter = {
-        collectionDate: {
-          // Includes requests from the start of the month to tomorrow
-          $gte: monthStart.toDate(),
-          $lt: tomorrow.toDate(),
-        },
-      };
-      break;
-    case "upcoming":
-      dateFilter = {
-        // Includes requests starting from tomorrow onwards
-        collectionDate: {
-          $gte: tomorrow.toDate(),
-        },
-      };
-      break;
-    default:
-      return res.status(400).json({ message: "Invalid filter" });
-  }
-
-  try {
-    const requests = await WasteRequest.find(dateFilter).populate("resident");
-    res.json(requests);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching requests", error });
-  }
-};
 
 // Mark the request as collected
 exports.markAsCollected = async (req, res) => {
@@ -171,5 +104,68 @@ exports.markAsPending = async (req, res) => {
     res.status(200).json({ message: "Request marked as pending" });
   } catch (error) {
     res.status(500).json({ message: "Error updating request status", error });
+  }
+};
+
+// Get requests based on filter (today, yesterday, week, month, upcoming)
+exports.getRequestsByFilter = async (req, res) => {
+  const { filter } = req.query;
+  const today = moment().startOf('day');
+  const tomorrow = moment(today).add(1, 'days');
+  const yesterday = moment(today).subtract(1, 'days');
+  const weekStart = moment(today).startOf('week');
+  const monthStart = moment(today).startOf('month');
+
+  let dateFilter;
+
+  switch (filter) {
+    case 'today':
+      dateFilter = {
+        collectionDate: {
+          $gte: today.toDate(),
+          $lt: tomorrow.toDate(),
+        },
+      };
+      break;
+    case 'yesterday':
+      dateFilter = {
+        collectionDate: {
+          $gte: yesterday.toDate(),
+          $lt: today.toDate(),
+        },
+      };
+      break;
+    case 'week':
+      dateFilter = {
+        collectionDate: {
+          $gte: weekStart.toDate(),
+          $lt: tomorrow.toDate(),
+        },
+      };
+      break;
+    case 'month':
+      dateFilter = {
+        collectionDate: {
+          $gte: monthStart.toDate(),
+          $lt: tomorrow.toDate(),
+        },
+      };
+      break;
+    case 'upcoming':
+      dateFilter = {
+        collectionDate: {
+          $gte: tomorrow.toDate(),
+        },
+      };
+      break;
+    default:
+      return res.status(400).json({ message: 'Invalid filter' });
+  }
+
+  try {
+    const requests = await WasteRequest.find(dateFilter).populate('resident');
+    res.json(requests);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching requests', error });
   }
 };

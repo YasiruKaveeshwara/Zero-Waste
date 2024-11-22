@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const Collector = require("../models/Collector");
+const Collector = require("../models/collector");
 
 exports.protectCollector = async (req, res, next) => {
   let token;
@@ -27,3 +27,14 @@ exports.protectCollector = async (req, res, next) => {
     return res.status(401).json({ message: "Not authorized, no token provided." });
   }
 };
+
+// Applied Pattern: Middleware Design Pattern
+// How it Works:
+
+// The Middleware Pattern in Express allows you to apply functionality (like authentication, logging, etc.) to requests before they reach the controller. In your project, you’ve applied middleware with JWT authentication in collectorMiddleware.js using protectCollector.
+
+// Why It's Important:
+
+// Separation of Concerns: Middleware separates authentication, validation, and other pre-processing logic from the core request handling. This keeps controllers focused on business logic and response handling.
+// Reusability: Middleware can be applied to any route (or group of routes), making it reusable across multiple endpoints.
+// Modularity: You can add different middlewares for various tasks (logging, validation, etc.) without changing controller logic, ensuring modular and maintainable code.

@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { reportIssue } = require("../controllers/issueController");
-const { protectCollector } = require("../middleware/collectorMiddleware");
+const issueController = require("../controllers/issueController");
+const { protectCollector } = require("../middleware/collectorMiddleware"); // Middleware to check JWT
 
-// Route for reporting issues
-router.post("/report", protectCollector, reportIssue);
+// Report an issue
+router.post("/report", protectCollector, issueController.reportIssue);
 
 module.exports = router;

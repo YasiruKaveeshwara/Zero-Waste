@@ -26,4 +26,7 @@ router.put(
     }
 );
 
+// Route to get all collectors/Vilan
+router.get("/", collectorController.getAllCollectors);
+
 module.exports = router;

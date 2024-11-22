@@ -1,30 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const IssueSchema = new mongoose.Schema({
   collectorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Collector',
-    required: true
+    ref: "Collector",
+    required: true,
   },
   requestId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'WasteRequest',
-    required: true
+    ref: "WasteRequest",
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   date: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
   },
   time: {
     type: String,
     default: () => new Date().toLocaleTimeString(),
-    required: true
-  }
+    required: true,
+  },
 });
 
-module.exports = mongoose.model('Issue', IssueSchema);
+module.exports = mongoose.model("Issue", IssueSchema);

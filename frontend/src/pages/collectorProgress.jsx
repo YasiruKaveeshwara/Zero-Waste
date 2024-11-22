@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaExclamationTriangle } from "react-icons/fa"; // Import report icon
+import { useLocation } from "react-router-dom";
 
 const CollectorProgress = () => {
   const [requests, setRequests] = useState([]);
@@ -11,6 +12,10 @@ const CollectorProgress = () => {
   const [selectedRequestId, setSelectedRequestId] = useState(null); // Track the request ID for reporting
   const [issueDescription, setIssueDescription] = useState(""); // Track the issue description
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const scannedResidentId = queryParams.get("residentId");
+
   const clearMessageAfterTimeout = () => {
     setTimeout(() => {
       setMessage("");
@@ -20,48 +25,41 @@ const CollectorProgress = () => {
   // Fetch collection requests based on filter
   useEffect(() => {
     fetchRequests();
+    if (scannedResidentId) {
+      handleAutoCollect(scannedResidentId); // Automatically collect requests for the scanned resident
+    }
     const interval = setInterval(fetchRequests, 5000); // Polling every 5 seconds for real-time updates
     return () => clearInterval(interval); // Clean up interval on component unmount
-  }, [filter]);
+  }, [filter, scannedResidentId]);
 
-  const fetchRequests = () => {
-    const token = localStorage.getItem("authToken"); // Ensure token is retrieved
-    if (!token) {
-      setMessage("You are not authenticated. Please log in.");
-      clearMessageAfterTimeout();
-      return;
+  const fetchRequests = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3050/api/requests/filter?filter=${filter}`);
+      setRequests(response.data);
+      console.log("Requests fetched successfully:", response.data);
+    } catch (error) {
+      console.error("Error fetching requests:", error.response ? error.response.data : error.message);
     }
+  };
 
-    axios
-      .get(`http://localhost:3050/api/collector/requests?filter=${filter}`, {
-        headers: { Authorization: `Bearer ${token}` }, // Token sent in Authorization header
-      })
-      .then((response) => {
-        const sortedRequests = response.data.sort((a, b) => {
-          if (a.status === "pending" && b.status === "collected") return -1;
-          if (a.status === "collected" && b.status === "pending") return 1;
-          return 0;
-        });
-        setRequests(sortedRequests);
-      })
-      .catch((error) => {
-        setMessage("Error fetching requests or unauthorized access.");
-        console.error(error);
-      });
+  // Automatically mark requests as collected for the resident ID scanned
+  const handleAutoCollect = async (residentId) => {
+    const requestsToCollect = requests.filter((request) => request.resident._id === residentId && request.status !== "collected");
+    for (const request of requestsToCollect) {
+      try {
+        await axios.put(`http://localhost:3050/api/requests/${request._id}/collected`);
+        setMessage(`Request for ${request.resident.residentName} has been marked as collected.`);
+      } catch (error) {
+        console.error(`Error marking request ${request._id} as collected:`, error);
+      }
+    }
   };
 
   // Handle checkbox toggle (Mark request as collected or not)
   const handleCollectedToggle = (requestId, isCollected) => {
-    const token = localStorage.getItem("authToken");
     const endpoint = isCollected ? "collected" : "pending"; // Change endpoint based on collected status
     axios
-      .put(
-        `http://localhost:3050/api/collector/requests/${requestId}/${endpoint}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      .put(`http://localhost:3050/api/requests/${requestId}/${endpoint}`)
       .then(() => {
         setMessage(`Request status updated to ${isCollected ? "collected" : "pending"}!`);
         clearMessageAfterTimeout();
@@ -94,10 +92,15 @@ const CollectorProgress = () => {
   };
 
   const handleSubmitReport = (requestId, issueDescription) => {
-    const token = localStorage.getItem("authToken");
-  
     if (!requestId || !issueDescription) {
       setMessage("Request ID and issue description are required.");
+      return;
+    }
+  
+    const token = localStorage.getItem("authToken"); // Retrieve the JWT token from localStorage
+  
+    if (!token) {
+      setMessage("Not authorized. Please log in again.");
       return;
     }
   
@@ -109,7 +112,9 @@ const CollectorProgress = () => {
           issueDescription,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the JWT token in the request header
+          },
         }
       )
       .then((response) => {
@@ -134,7 +139,7 @@ const CollectorProgress = () => {
       {message && <div className='px-4 py-2 mb-4 text-green-700 bg-green-100 rounded-lg'>{message}</div>}
 
       {/* Filter by Days */}
-      <div className='mx-10 mb-6'>
+      <div className='mx-32 mb-6'>
         <label className='font-semibold text-gray-700'>Filter by Day:</label>
         <select value={filter} onChange={(e) => setFilter(e.target.value)} className='px-4 py-2 ml-4 text-gray-600 border rounded-lg'>
           <option value='today'>Today</option>
@@ -147,16 +152,18 @@ const CollectorProgress = () => {
 
       {/* Collection Requests List */}
       {requests.length > 0 ? (
-        <div className='grid grid-cols-1 gap-6 mx-10'>
+        <div className='grid grid-cols-1 gap-6 mx-32'>
           {requests.map((request) => (
-            <div key={request._id} className='p-4 bg-white rounded-lg shadow-lg'>
-              <div className='flex items-center justify-between'>
-                {/* Resident Name, Waste Type, and Quantity in a horizontal row */}
-                <div className='flex-grow' onClick={() => toggleExpand(request._id)} style={{ cursor: "pointer" }}>
-                  <p className='inline-block font-bold text-green-700'>Resident: {request.resident?.residentName}</p>{" "}
-                  {/* Using populated resident data */}
-                  <p className='inline-block ml-6 text-gray-600'>Waste Type: {request.wasteType}</p>
-                  <p className='inline-block ml-6 text-gray-600'>Quantity: {request.quantity}</p>
+            <div key={request._id} className='p-4 bg-white rounded-lg shadow-lg' onClick={() => toggleExpand(request._id)}>
+              <div className='flex justify-between'>
+                <div className='flex flex-col'>
+                  <p className='font-bold text-green-700'>Resident: {request.resident?.residentName}</p>
+                </div>
+                <div className='flex flex-col'>
+                  <p className='text-gray-600'>Waste Type: {request.wasteType}</p>
+                </div>
+                <div className='flex flex-col'>
+                  <p className='text-gray-600'>Quantity: {request.quantity}</p>
                 </div>
 
                 {/* Checkbox and Report Issue Button */}
@@ -167,24 +174,39 @@ const CollectorProgress = () => {
                       <input type='checkbox' checked={true} disabled className='w-5 h-5' />
                     </>
                   ) : (
-                    <input
-                      type='checkbox'
-                      checked={request.status === "collected"}
-                      onChange={(e) => handleCollectedToggle(request._id, e.target.checked)}
-                      className='w-5 h-5'
-                    />
+                    <>
+                      <div className='relative group'>
+                        <input
+                          type='checkbox'
+                          checked={request.status === "collected"}
+                          onChange={(e) => handleCollectedToggle(request._id, e.target.checked)}
+                          className='w-5 h-5'
+                        />
+                        <div className='absolute hidden w-32 mb-2 transform -translate-x-1/2 bottom-full left-1/2 group-hover:block'>
+                          <div className='px-2 py-1 mx-auto text-xs text-white bg-gray-700 rounded'>Mark as Collected</div>
+                        </div>
+                      </div>
+                    </>
                   )}
-                  <button onClick={() => handleReportIssue(request._id)} className='text-red-600 hover:text-red-800'>
-                    <FaExclamationTriangle />
-                  </button>
+                  <div className='relative group'>
+                    <button onClick={() => handleReportIssue(request._id)} className='text-red-400 hover:text-red-800'>
+                      <FaExclamationTriangle />
+                    </button>
+                    <div className='absolute hidden mb-2 transform -translate-x-1/2 w-28 bottom-full left-1/2 group-hover:block'>
+                      <div className='px-2 py-1 mx-auto text-xs text-white bg-gray-700 rounded'>Report the issue</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Expandable Details */}
+
               {expandedRequests[request._id] && (
                 <div className='p-4 mt-4 border-t border-gray-200'>
                   <p className='text-gray-600'>Scheduled Collection Date: {request.collectionDate}</p>
-                  <p className='text-gray-600'>Scheduled Collection Time: {request.collectionTime}</p> {/* Collection Time */}
+                  <p className='text-gray-600'>Scheduled Collection Time: {request.collectionTime}</p>
+                  <p className='text-gray-600'>Resident Address: {request.resident?.address}</p>
+                  <p className='text-gray-600'>City: {request.resident?.city}</p>
                 </div>
               )}
             </div>
