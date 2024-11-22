@@ -27,11 +27,18 @@ const ScheduleSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["scheduled","accepted", "completed", "canceled"],
+      enum: ["scheduled", "completed", "canceled", "accepted"],
       default: "scheduled",
     },
+    requests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "WasteRequest",
+      },
+    ],
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Schedule", ScheduleSchema);

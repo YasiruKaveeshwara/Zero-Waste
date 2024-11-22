@@ -9,11 +9,14 @@ router.post("/create", scheduleController.createSchedule); // Ensure `createSche
 // Get all schedules for a specific collector
 router.get("/collector/:collectorId", scheduleController.getCollectorSchedules);
 
+// Get all schedules
 router.get("/getAll", scheduleController.getAllSchedules); // Route for getting all schedules
-router.get("/getAll", scheduleController.getAllSchedules);
 
+// Route to get schedules by collection center
+router.get("/getByCenter/:centerId", scheduleController.getSchedulesByCenter);
+
+// -----------------------Yasiru---------------------------
 router.put("/accept/:scheduleId", scheduleController.updateScheduleStatus);
 router.put("/cancel/:scheduleId", scheduleController.cancelSchedule);
-
 
 module.exports = router;

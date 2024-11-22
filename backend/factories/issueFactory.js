@@ -1,4 +1,4 @@
-const Issue = require('../models/Issue');
+const Issue = require("../models/Issue");
 
 class IssueFactory {
   static createIssue(collectorId, requestId, description, time) {
@@ -13,8 +13,6 @@ class IssueFactory {
 }
 
 module.exports = IssueFactory;
-
-
 
 // Factory Pattern (Already Applied in IssueFactory)
 // Purpose: This pattern is used to create objects without exposing the instantiation logic to the client. In your code, you’ve used the IssueFactory to handle the creation of the Issue model objects.

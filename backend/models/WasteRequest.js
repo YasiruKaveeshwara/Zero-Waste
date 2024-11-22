@@ -1,36 +1,36 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const WasteRequestSchema = new mongoose.Schema({
   resident: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Resident",
-    required: true,
+    ref: 'Resident',
+    required: true
   },
   wasteType: {
     type: String,
-    required: true,
+    required: true
   },
   quantity: {
     type: String,
-    required: true,
+    required: true
   },
   collectionDate: {
     type: Date,
-    required: true,
+    required: true
   },
   collectionTime: {
     type: String,
-    required: true,
+    required: true
   },
   status: {
     type: String,
-    enum: ["pending", "collected", "canceled"],
-    default: "pending",
+    enum: ['pending', 'scheduled', 'collected', 'canceled'],
+    default: 'pending'
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
-module.exports = mongoose.model("WasteRequest", WasteRequestSchema);
+module.exports = mongoose.model('WasteRequest', WasteRequestSchema);
