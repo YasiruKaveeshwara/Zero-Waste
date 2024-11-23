@@ -1,3 +1,9 @@
+<h3>Garbage Management System using MERN Stack</h3>
+
+Route scheduling 
+Waste collecting
+QR scanning
+
 Install node modules in both backend and frontend
 
 > cd backend
