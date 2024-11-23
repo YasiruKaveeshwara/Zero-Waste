@@ -19,6 +19,6 @@ Frontend start
 
 .env format
 
-PORT=
-JWT_SECRET=
-MONGODB_URL= 
+PORT= <br>
+JWT_SECRET= <br>
+MONGODB_URL=  <br>
